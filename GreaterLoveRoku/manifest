@@ -1,0 +1,30 @@
+##   Channel Details
+title=Greater Love TV
+major_version=3
+minor_version=0
+build_version=00001
+
+##   Channel Assets
+mm_icon_focus_hd=pkg:/images/app_logo.png
+mm_icon_focus_sd=pkg:/images/app_logo.png
+mm_icon_side_hd=pkg:/images/app_logo.png
+mm_icon_side_sd=pkg:/images/app_logo.png
+splash_screen_hd=pkg:/images/background.png
+splash_screen_sd=pkg:/images/background.png
+
+##   Application Attributes
+ui_resolutions=hd
+
+##   Network Permissions
+bs_libs_required=roku_ads_lib
+requires_internet=1
+
+##   Screensaver Attributes
+screensaver_title=Greater Love TV
+
+##   Localization Support
+supported_locales=en_US
+
+##   Channel Store Information
+subtitle=Stream Bible Teachers & Live Christian Programming
+channel_genre=faith

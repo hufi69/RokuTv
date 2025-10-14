@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- About Scene for Greater Love TV -->
+<component name="AboutScene" extends="Scene">
+  <interface>
+    <field id="backPressed" type="boolean" />
+  </interface>
+  <script type="text/brightscript" uri="AboutScene.brs" />
+
+  <children>
+    <!-- Background Image -->
+    <Poster id="backgroundImage"
+            uri="pkg:/images/background.png"
+            width="1920"
+            height="1080"
+            translation="[0, 0]" />
+
+    <!-- Dark Overlay -->
+    <Rectangle id="backgroundOverlay"
+               color="0x00000099"
+               width="1920"
+               height="1080"
+               translation="[0, 0]" />
+
+    <!-- Header -->
+    <Rectangle id="header"
+               color="0x000000CC"
+               width="1920"
+               height="120"
+               translation="[0, 0]" />
+
+    <!-- Back Button -->
+    <Rectangle id="backButton"
+               color="0xDC143C"
+               width="120"
+               height="60"
+               translation="[60, 30]"
+               focusable="true" />
+
+    <Label id="backButtonText"
+           translation="[80, 45]"
+           width="80"
+           height="30"
+           font="font:MediumSystemFont"
+           color="0xFFFFFF"
+           text="← Back"
+           horizAlign="center"
+           vertAlign="center" />
+
+    <!-- About Header -->
+    <Label id="aboutTitle"
+           translation="[220, 30]"
+           width="600"
+           height="60"
+           font="font:LargeBoldSystemFont"
+           color="0xFFFFFF"
+           text="ABOUT GREATER LOVE NETWORK"
+           horizAlign="left"
+           vertAlign="center" />
+
+    <!-- Hero Section -->
+    <Poster id="aboutTopImage"
+            uri="pkg:/images/about_us_top.png"
+            width="1800"
+            height="400"
+            translation="[60, 160]" />
+
+    <!-- Content Container -->
+    <Rectangle id="contentBackground"
+               color="0x000000CC"
+               width="1800"
+               height="600"
+               translation="[60, 600]" />
+
+    <!-- Mission Text -->
+    <Label id="missionTitle"
+           translation="[120, 640]"
+           width="800"
+           height="40"
+           font="font:LargeBoldSystemFont"
+           color="0xFFFFFF"
+           text="OUR MISSION & VISION"
+           horizAlign="left"
+           vertAlign="center" />
+
+    <Label id="missionText"
+           translation="[120, 700]"
+           width="800"
+           height="200"
+           font="font:MediumSystemFont"
+           color="0xCCCCCC"
+           text="Greater Love Network Television has a singular goal: to reach souls with the good news of Jesus Christ. We seek out every available means of distribution to a world in need of hope."
+           wrap="true"
+           horizAlign="left"
+           vertAlign="top" />
+
+    <Label id="visionText"
+           translation="[120, 920]"
+           width="800"
+           height="200"
+           font="font:MediumSystemFont"
+           color="0xCCCCCC"
+           text="With an extensive blend of interdenominational and multi-cultural programming, we are committed to producing quality television that will reach our viewers, refresh their lives, and renew their hearts."
+           wrap="true"
+           horizAlign="left"
+           vertAlign="top" />
+
+    <!-- Side Image -->
+    <Poster id="aboutBottomImage"
+            uri="pkg:/images/about_us_bottom.jpg"
+            width="400"
+            height="300"
+            translation="[1000, 700]" />
+
+    <!-- QR Codes Section -->
+    <Label id="connectTitle"
+           translation="[1000, 1020]"
+           width="400"
+           height="40"
+           font="font:LargeBoldSystemFont"
+           color="0xFFFFFF"
+           text="CONNECT WITH US"
+           horizAlign="left"
+           vertAlign="center" />
+
+    <!-- QR Code Grid -->
+    <RowList id="qrCodesList"
+             translation="[1000, 1080]"
+             itemSize="[180, 180]"
+             rowItemSize="[180, 180]"
+             itemSpacing="[20, 20]"
+             rowItemSpacing="[20, 20]"
+             showRowLabel="[false]"
+             visible="true" />
+  </children>
+</component>

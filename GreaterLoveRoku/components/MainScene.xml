@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Main Scene for Greater Love TV - Netflix Style Design -->
+<component name="MainScene" extends="Scene">
+  <script type="text/brightscript" uri="MainScene.brs" />
+
+  <children>
+    <!-- Background Image -->
+    <Poster id="backgroundImage"
+            uri="pkg:/images/background.png"
+            width="1920"
+            height="1080"
+            translation="[0, 0]" />
+    
+    <!-- Dark Overlay for better text visibility -->
+    <Rectangle id="backgroundOverlay"
+               color="0x00000099"
+               width="1920"
+               height="1080"
+               translation="[0, 0]" />
+
+    <!-- Header Navigation -->
+    <Rectangle id="header"
+               color="0x00000099"
+               width="1920"
+               height="80"
+               translation="[0, 0]" />
+
+    <!-- App Logo -->
+    <Poster id="appLogo"
+            uri="pkg:/images/app_logo.png"
+            width="200"
+            height="60"
+            translation="[60, 10]" />
+
+    <!-- Navigation Menu -->
+    <Label id="homeLabel"
+           translation="[1400, 25]"
+           width="80"
+           height="30"
+           font="font:SmallSystemFont"
+           color="0xFFFFFF"
+           text="HOME"
+           horizAlign="center"
+           vertAlign="center" />
+
+    <Label id="aboutLabel"
+           translation="[1500, 25]"
+           width="100"
+           height="30"
+           font="font:SmallSystemFont"
+           color="0xE5E5E5"
+           text="ABOUT US"
+           horizAlign="center"
+           vertAlign="center" />
+
+    <Label id="categoriesLabel"
+           translation="[1620, 25]"
+           width="140"
+           height="30"
+           font="font:SmallSystemFont"
+           color="0xE5E5E5"
+           text="ALL SHOWS"
+           horizAlign="center"
+           vertAlign="center" />
+
+    <Label id="infoLabel"
+           translation="[1780, 25]"
+           width="80"
+           height="30"
+           font="font:SmallSystemFont"
+           color="0xE5E5E5"
+           text="INFO"
+           horizAlign="center"
+           vertAlign="center" />
+
+    <!-- Hero Section with Minister Grid Background -->
+    <Rectangle id="heroSection"
+               color="0x00000099"
+               width="1920"
+               height="600"
+               translation="[0, 80]" />
+
+    <!-- Minister Grid Background -->
+    <RowList id="ministerGridBg"
+             translation="[0, 80]"
+             itemSize="[240, 150]"
+             rowItemSize="[240, 150]"
+             itemSpacing="[2, 2]"
+             rowItemSpacing="[2, 2]"
+             showRowLabel="[false]"
+             visible="true"
+             opacity="0.3" />
+
+    <!-- Hero Text -->
+    <Label id="heroTitle"
+           translation="[60, 300]"
+           width="600"
+           height="200"
+           font="font:LargeBoldSystemFont"
+           color="0xFFFFFF"
+           text="STREAM YOUR FAVORITE BIBLE TEACHERS"
+           wrap="true"
+           horizAlign="left"
+           vertAlign="top" />
+
+    <Label id="heroSubtitle"
+           translation="[60, 450]"
+           width="400"
+           height="40"
+           font="font:MediumSystemFont"
+           color="0xFFFFFF"
+           text="IN ONE PLACE"
+           horizAlign="left"
+           vertAlign="center" />
+
+    <!-- Continue Watching Section -->
+    <Label id="continueWatchingTitle"
+           translation="[60, 700]"
+           width="300"
+           height="30"
+           font="font:MediumSystemFont"
+           color="0xFFFFFF"
+           text="Continue Watching"
+           horizAlign="left"
+           vertAlign="center" />
+
+    <RowList id="continueWatchingList"
+             translation="[60, 740]"
+             itemSize="[200, 112]"
+             rowItemSize="[200, 112]"
+             itemSpacing="[10, 0]"
+             rowItemSpacing="[10, 0]"
+             showRowLabel="[false]"
+             visible="true" />
+
+    <!-- Categories Section -->
+    <Label id="categoriesTitle"
+           translation="[60, 880]"
+           width="300"
+           height="30"
+           font="font:MediumSystemFont"
+           color="0xFFFFFF"
+           text="Categories"
+           horizAlign="left"
+           vertAlign="center" />
+
+    <RowList id="categoriesList"
+             translation="[60, 920]"
+             itemSize="[240, 135]"
+             rowItemSize="[240, 135]"
+             itemSpacing="[10, 0]"
+             rowItemSpacing="[10, 0]"
+             showRowLabel="[false]"
+             visible="true" />
+
+    <!-- Premium Shows Section -->
+    <Label id="premiumShowsTitle"
+           translation="[60, 1080]"
+           width="300"
+           height="30"
+           font="font:MediumSystemFont"
+           color="0xFFFFFF"
+           text="⭐ Premium Shows"
+           horizAlign="left"
+           vertAlign="center" />
+
+    <RowList id="premiumShowsList"
+             translation="[60, 1120]"
+             itemSize="[280, 160]"
+             rowItemSize="[280, 160]"
+             itemSpacing="[10, 0]"
+             rowItemSpacing="[10, 0]"
+             showRowLabel="[false]"
+             visible="true" />
+
+    <!-- All Shows Section -->
+    <Label id="showsTitle"
+           translation="[60, 1320]"
+           width="300"
+           height="30"
+           font="font:MediumSystemFont"
+           color="0xFFFFFF"
+           text="📺 All Shows & Episodes"
+           horizAlign="left"
+           vertAlign="center" />
+
+    <RowList id="showsList"
+             translation="[60, 1360]"
+             itemSize="[150, 150]"
+             rowItemSize="[150, 150]"
+             itemSpacing="[15, 0]"
+             rowItemSpacing="[15, 0]"
+             showRowLabel="[false]"
+             visible="true" />
+
+    <!-- Live Streams Section -->
+    <Label id="liveStreamsTitle"
+           translation="[60, 1540]"
+           width="300"
+           height="30"
+           font="font:MediumSystemFont"
+           color="0xFFFFFF"
+           text="🔴 Live Streams"
+           horizAlign="left"
+           vertAlign="center" />
+
+    <RowList id="liveStreamsList"
+             translation="[60, 1580]"
+             itemSize="[400, 225]"
+             rowItemSize="[400, 225]"
+             itemSpacing="[10, 0]"
+             rowItemSpacing="[10, 0]"
+             showRowLabel="[false]"
+             visible="true" />
+
+    <!-- Video Player (initially hidden) -->
+    <Video id="videoPlayer"
+           translation="[0, 0]"
+           width="1920"
+           height="1080"
+           visible="false" />
+
+    <!-- Loading Indicator -->
+    <BusySpinner id="loadingSpinner"
+                 translation="[940, 540]"
+                 visible="false" />
+
+    <!-- Focus Indicator -->
+    <Rectangle id="focusIndicator"
+               color="0xDC143C"
+               width="220"
+               height="220"
+               translation="[710, 90]"
+               visible="false" />
+  </children>
+</component>

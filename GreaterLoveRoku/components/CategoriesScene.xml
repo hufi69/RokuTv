@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- All Categories Scene - Figma Design -->
+<component name="CategoriesScene" extends="Scene">
+  <script type="text/brightscript" uri="CategoriesScene.brs" />
+
+  <children>
+    <!-- Background -->
+    <Rectangle id="background"
+               color="0x0F1419"
+               width="1920"
+               height="1080" />
+
+    <!-- Header Navigation -->
+    <Rectangle id="header"
+               color="0x1A2332"
+               width="1920"
+               height="80"
+               translation="[0, 0]" />
+
+    <!-- Logo -->
+    <Poster id="logoImage"
+            uri="pkg:/images/logo.png"
+            translation="[60, 20]"
+            width="300"
+            height="40" />
+
+    <!-- Navigation Menu -->
+    <RowList id="navMenu"
+             translation="[1400, 20]"
+             itemSize="[120, 40]"
+             rowItemSize="[120, 40]"
+             itemSpacing="[20, 0]"
+             rowItemSpacing="[20, 0]"
+             showRowLabel="[false]"
+             visible="true" />
+
+    <!-- Page Title -->
+    <Label id="pageTitle"
+           translation="[100, 120]"
+           width="800"
+           height="60"
+           font="font:LargeBoldSystemFont"
+           color="0xFFFFFF"
+           text="ALL CATEGORIES"
+           horizAlign="left"
+           vertAlign="center" />
+
+    <!-- Categories Grid -->
+    <Rectangle id="categoriesContainer"
+               color="0x00000000"
+               width="1920"
+               height="900"
+               translation="[0, 200]" />
+
+    <!-- Row 1 -->
+    <RowList id="row1"
+             translation="[100, 220]"
+             itemSize="[400, 200]"
+             rowItemSize="[400, 200]"
+             itemSpacing="[20, 0]"
+             rowItemSpacing="[20, 0]"
+             showRowLabel="[false]"
+             visible="true" />
+
+    <!-- Row 2 -->
+    <RowList id="row2"
+             translation="[100, 440]"
+             itemSize="[400, 200]"
+             rowItemSize="[400, 200]"
+             itemSpacing="[20, 0]"
+             rowItemSpacing="[20, 0]"
+             showRowLabel="[false]"
+             visible="true" />
+
+    <!-- Row 3 -->
+    <RowList id="row3"
+             translation="[100, 660]"
+             itemSize="[400, 200]"
+             rowItemSize="[400, 200]"
+             itemSpacing="[20, 0]"
+             rowItemSpacing="[20, 0]"
+             showRowLabel="[false]"
+             visible="true" />
+
+    <!-- Row 4 -->
+    <RowList id="row4"
+             translation="[100, 880]"
+             itemSize="[400, 200]"
+             rowItemSize="[400, 200]"
+             itemSpacing="[20, 0]"
+             rowItemSpacing="[20, 0]"
+             showRowLabel="[false]"
+             visible="true" />
+
+    <!-- Row 5 -->
+    <RowList id="row5"
+             translation="[100, 1100]"
+             itemSize="[400, 200]"
+             rowItemSize="[400, 200]"
+             itemSpacing="[20, 0]"
+             rowItemSpacing="[20, 0]"
+             showRowLabel="[false]"
+             visible="true" />
+
+    <!-- Back Button -->
+    <Rectangle id="backButton"
+               color="0x333333"
+               width="150"
+               height="50"
+               translation="[50, 30]"
+               visible="true" />
+
+    <Label id="backButtonText"
+           translation="[50, 30]"
+           width="150"
+           height="50"
+           font="font:MediumSystemFont"
+           color="0xFFFFFF"
+           text="← BACK"
+           horizAlign="center"
+           vertAlign="center" />
+
+    <!-- Focus Indicator -->
+    <Rectangle id="focusIndicator"
+               color="0x6a1b9a"
+               width="420"
+               height="220"
+               translation="[90, 210]"
+               visible="false" />
+  </children>
+</component>

@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Video Player Scene - Figma Design -->
+<component name="VideoPlayerScene" extends="Scene">
+  <interface>
+    <field id="videoContent" type="node" />
+  </interface>
+  <script type="text/brightscript" uri="VideoPlayerScene.brs" />
+
+  <children>
+    <!-- Video Player -->
+    <Video id="videoPlayer"
+           translation="[0, 0]"
+           width="1920"
+           height="1080"
+           visible="true" />
+
+    <!-- Video Overlay -->
+    <Rectangle id="videoOverlay"
+               color="0x000000"
+               width="1920"
+               height="1080"
+               translation="[0, 0]"
+               opacity="0.3"
+               visible="false" />
+
+    <!-- Back Button -->
+    <Rectangle id="backButton"
+               color="0x333333"
+               width="150"
+               height="50"
+               translation="[50, 30]"
+               visible="true" />
+
+    <Label id="backButtonText"
+           translation="[50, 30]"
+           width="150"
+           height="50"
+           font="font:MediumSystemFont"
+           color="0xFFFFFF"
+           text="← BACK"
+           horizAlign="center"
+           vertAlign="center" />
+
+    <!-- Video Title -->
+    <Label id="videoTitle"
+           translation="[100, 50]"
+           width="800"
+           height="60"
+           font="font:LargeBoldSystemFont"
+           color="0xFFFFFF"
+           text="Video Title"
+           horizAlign="left"
+           vertAlign="center" />
+
+    <!-- Playback Controls -->
+    <Rectangle id="controlsContainer"
+               color="0x000000"
+               width="1920"
+               height="120"
+               translation="[0, 960]"
+               opacity="0.8"
+               visible="true" />
+
+    <!-- Progress Bar -->
+    <Rectangle id="progressBarBackground"
+               color="0x666666"
+               width="1600"
+               height="6"
+               translation="[160, 1000]" />
+
+    <Rectangle id="progressBarFill"
+               color="0xFF4444"
+               width="400"
+               height="6"
+               translation="[160, 1000]" />
+
+    <!-- Time Display -->
+    <Label id="currentTime"
+           translation="[100, 1010]"
+           width="50"
+           height="30"
+           font="font:SmallSystemFont"
+           color="0xFFFFFF"
+           text="0:51"
+           horizAlign="center"
+           vertAlign="center" />
+
+    <Label id="totalTime"
+           translation="[1770, 1010]"
+           width="50"
+           height="30"
+           font="font:SmallSystemFont"
+           color="0xFFFFFF"
+           text="2:31"
+           horizAlign="center"
+           vertAlign="center" />
+
+    <!-- Control Buttons -->
+    <Rectangle id="playButton"
+               color="0x6a1b9a"
+               width="60"
+               height="60"
+               translation="[200, 1020]"
+               visible="true" />
+
+    <Label id="playButtonText"
+           translation="[200, 1020]"
+           width="60"
+           height="60"
+           font="font:MediumSystemFont"
+           color="0xFFFFFF"
+           text="▶"
+           horizAlign="center"
+           vertAlign="center" />
+
+    <Rectangle id="rewindButton"
+               color="0x444444"
+               width="50"
+               height="50"
+               translation="[280, 1025]"
+               visible="true" />
+
+    <Label id="rewindButtonText"
+           translation="[280, 1025]"
+           width="50"
+           height="50"
+           font="font:SmallSystemFont"
+           color="0xFFFFFF"
+           text="⏪"
+           horizAlign="center"
+           vertAlign="center" />
+
+    <Rectangle id="forwardButton"
+               color="0x444444"
+               width="50"
+               height="50"
+               translation="[340, 1025]"
+               visible="true" />
+
+    <Label id="forwardButtonText"
+           translation="[340, 1025]"
+           width="50"
+           height="50"
+           font="font:SmallSystemFont"
+           color="0xFFFFFF"
+           text="⏩"
+           horizAlign="center"
+           vertAlign="center" />
+
+    <Rectangle id="volumeButton"
+               color="0x444444"
+               width="50"
+               height="50"
+               translation="[400, 1025]"
+               visible="true" />
+
+    <Label id="volumeButtonText"
+           translation="[400, 1025]"
+           width="50"
+           height="50"
+           font="font:SmallSystemFont"
+           color="0xFFFFFF"
+           text="🔊"
+           horizAlign="center"
+           vertAlign="center" />
+
+    <Rectangle id="fullscreenButton"
+               color="0x444444"
+               width="50"
+               height="50"
+               translation="[460, 1025]"
+               visible="true" />
+
+    <Label id="fullscreenButtonText"
+           translation="[460, 1025]"
+           width="50"
+           height="50"
+           font="font:SmallSystemFont"
+           color="0xFFFFFF"
+           text="⛶"
+           horizAlign="center"
+           vertAlign="center" />
+
+    <!-- Episode Navigation Dots -->
+    <Rectangle id="episodeDots"
+               color="0x00000000"
+               width="50"
+               height="300"
+               translation="[50, 390]"
+               visible="true" />
+
+    <!-- Dot 1 -->
+    <Rectangle id="dot1"
+               color="0xFFFFFF"
+               width="12"
+               height="12"
+               translation="[69, 400]"
+               visible="true" />
+
+    <!-- Dot 2 -->
+    <Rectangle id="dot2"
+               color="0x666666"
+               width="12"
+               height="12"
+               translation="[69, 430]"
+               visible="true" />
+
+    <!-- Dot 3 -->
+    <Rectangle id="dot3"
+               color="0x666666"
+               width="12"
+               height="12"
+               translation="[69, 460]"
+               visible="true" />
+
+    <!-- Dot 4 -->
+    <Rectangle id="dot4"
+               color="0x666666"
+               width="12"
+               height="12"
+               translation="[69, 490]"
+               visible="true" />
+
+    <!-- Dot 5 -->
+    <Rectangle id="dot5"
+               color="0x666666"
+               width="12"
+               height="12"
+               translation="[69, 520]"
+               visible="true" />
+
+    <!-- Loading Indicator -->
+    <BusySpinner id="loadingSpinner"
+                 translation="[940, 540]"
+                 visible="false" />
+  </children>
+</component>

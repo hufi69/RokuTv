@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Greater Love TV - Netflix Style</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background: #141414;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        .header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.7) 10%, transparent);
+            padding: 20px 60px;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .nav-item {
+            color: #e5e5e5;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s;
+            cursor: pointer;
+        }
+
+        .nav-item:hover {
+            color: #b3b3b3;
+        }
+
+        .nav-item.active {
+            color: white;
+            font-weight: bold;
+        }
+
+        /* Hero Section */
+        .hero {
+            position: relative;
+            height: 80vh;
+            background: linear-gradient(to bottom, transparent 60%, #141414 100%);
+            margin-bottom: -100px;
+        }
+
+        .hero-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            grid-template-rows: repeat(4, 1fr);
+            gap: 2px;
+            opacity: 0.3;
+            overflow: hidden;
+        }
+
+        .minister-thumb {
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.7);
+        }
+
+        .hero-content {
+            position: absolute;
+            bottom: 40%;
+            left: 60px;
+            max-width: 500px;
+        }
+
+        .hero-title {
+            font-size: 4vw;
+            font-weight: bold;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+        }
+
+        .hero-subtitle {
+            font-size: 1.5vw;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+        }
+
+        /* Content Sections */
+        .content-section {
+            padding: 20px 60px;
+            margin-bottom: 40px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .section-title {
+            font-size: 1.4vw;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        /* Carousel Container */
+        .carousel {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            scrollbar-width: none;
+        }
+
+        .carousel::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Continue Watching Cards */
+        .continue-card {
+            min-width: 200px;
+            height: 112px;
+            background: #2f2f2f;
+            border-radius: 4px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s;
+            position: relative;
+        }
+
+        .continue-card:hover {
+            transform: scale(1.05);
+        }
+
+        .continue-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .continue-card .title {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 10px;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        /* Category Cards */
+        .category-card {
+            min-width: 240px;
+            height: 135px;
+            background: #2f2f2f;
+            border-radius: 4px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s;
+            position: relative;
+        }
+
+        .category-card:hover {
+            transform: scale(1.05);
+        }
+
+        .category-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .category-card .label {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.7);
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        /* Show Cards (Circular) */
+        .show-card {
+            min-width: 150px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .show-card:hover {
+            transform: scale(1.1);
+        }
+
+        .show-card .thumbnail {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-bottom: 10px;
+            border: 2px solid transparent;
+            transition: border-color 0.3s;
+        }
+
+        .show-card:hover .thumbnail {
+            border-color: white;
+        }
+
+        .show-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .show-card .title {
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .show-card .subtitle {
+            font-size: 12px;
+            color: #b3b3b3;
+        }
+
+        /* Episode Dots */
+        .episode-dots {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            margin-top: 5px;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #666;
+        }
+
+        .dot.active {
+            background: white;
+        }
+
+        /* Live Stream Cards */
+        .live-card {
+            min-width: 400px;
+            height: 225px;
+            background: #2f2f2f;
+            border-radius: 4px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s;
+            position: relative;
+        }
+
+        .live-card:hover {
+            transform: scale(1.05);
+        }
+
+        .live-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .live-card .overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 20px;
+            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+        }
+
+        .live-card .channel-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .live-card .channel-number {
+            color: #e50914;
+            font-size: 36px;
+            font-weight: bold;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                padding: 15px 20px;
+            }
+
+            .content-section {
+                padding: 20px;
+            }
+
+            .hero-title {
+                font-size: 8vw;
+            }
+
+            .hero-subtitle {
+                font-size: 4vw;
+            }
+
+            .section-title {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <img src="../images/app_logo.png" alt="Greater Love Network" style="height: 40px;">
+        <nav class="nav-menu">
+            <a class="nav-item active">HOME</a>
+            <a class="nav-item">ABOUT US</a>
+            <a class="nav-item">ALL CATEGORIES</a>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" style="background-image: url('../images/background.png'); background-size: cover; background-position: center;">
+        <div class="hero-bg" id="heroBg"></div>
+        <div class="hero-content">
+            <h1 class="hero-title">STREAM YOUR<br>FAVORITE<br>BIBLE TEACHERS</h1>
+            <p class="hero-subtitle">IN ONE PLACE</p>
+        </div>
+    </section>
+
+    <!-- Continue Watching -->
+    <section class="content-section">
+        <h2 class="section-title">Continue Watching</h2>
+        <div class="carousel" id="continueCarousel">
+            <div class="continue-card">
+                <img src="https://via.placeholder.com/200x112/0099cc/ffffff?text=DAYSTAR" alt="Daystar">
+                <div class="title">DAYSTAR</div>
+            </div>
+            <div class="continue-card">
+                <img src="https://via.placeholder.com/200x112/ffffff/333333?text=CANADA+LIVE" alt="Canada">
+                <div class="title">CANADA LIVE</div>
+            </div>
+            <div class="continue-card">
+                <img src="https://via.placeholder.com/200x112/ff6b6b/ffffff?text=ESPAÑOL" alt="Español">
+                <div class="title">ESPAÑOL</div>
+            </div>
+            <div class="continue-card">
+                <img src="https://via.placeholder.com/200x112/0066cc/ffffff?text=ISRAEL" alt="Israel">
+                <div class="title">ISRAEL</div>
+            </div>
+            <div class="continue-card">
+                <img src="https://via.placeholder.com/200x112/00cc99/ffffff?text=ESPAÑA" alt="España">
+                <div class="title">ESPAÑA</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Categories -->
+    <section class="content-section">
+        <h2 class="section-title">Categories</h2>
+        <div class="carousel" id="categoriesCarousel">
+            <div class="category-card">
+                <img src="https://via.placeholder.com/240x135/4a90e2/ffffff?text=MINISTRY+NOW" alt="Ministry Now">
+                <div class="label">All</div>
+            </div>
+            <div class="category-card">
+                <img src="https://via.placeholder.com/240x135/ff69b4/ffffff?text=JONI+TABLE+TALK" alt="Joni Table Talk">
+                <div class="label">Original</div>
+            </div>
+            <div class="category-card">
+                <img src="https://via.placeholder.com/240x135/ffa500/ffffff?text=REBECCA+WEISS" alt="Rebecca Weiss">
+                <div class="label">Live TV</div>
+            </div>
+            <div class="category-card">
+                <img src="https://via.placeholder.com/240x135/32cd32/ffffff?text=PLANTING+THE+HEAVENS" alt="Planting the Heavens">
+                <div class="label">Movies</div>
+            </div>
+            <div class="category-card">
+                <img src="https://via.placeholder.com/240x135/9370db/ffffff?text=MARCUS+%26+JONI" alt="Marcus & Joni">
+                <div class="label">Web Series</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Shows -->
+    <section class="content-section">
+        <h2 class="section-title">Shows</h2>
+        <div class="carousel" id="showsCarousel">
+            <div class="show-card">
+                <div class="thumbnail">
+                    <img src="https://via.placeholder.com/150/4a5568/ffffff?text=Oasis" alt="Oasis Ministries">
+                </div>
+                <div class="title">Oasis Ministries</div>
+                <div class="subtitle">Anthony & Shelia Wynn</div>
+                <div class="episode-dots">
+                    <span class="dot active"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                </div>
+            </div>
+            <div class="show-card">
+                <div class="thumbnail">
+                    <img src="https://via.placeholder.com/150/333333/ffffff?text=J%26M" alt="Jessica & Micah Wynn">
+                </div>
+                <div class="title">Jessica & Micah Wynn</div>
+                <div class="subtitle">Lead By The Word</div>
+                <div class="episode-dots">
+                    <span class="dot active"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                </div>
+            </div>
+            <div class="show-card">
+                <div class="thumbnail">
+                    <img src="https://via.placeholder.com/150/2e4057/ffffff?text=Created" alt="Created To Praise">
+                </div>
+                <div class="title">Created To Praise</div>
+                <div class="subtitle">Tim Hill</div>
+                <div class="episode-dots">
+                    <span class="dot active"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                </div>
+            </div>
+            <div class="show-card">
+                <div class="thumbnail">
+                    <img src="https://via.placeholder.com/150/5c6b7d/ffffff?text=Manna" alt="Manna-Fest">
+                </div>
+                <div class="title">Manna-Fest</div>
+                <div class="subtitle">Perry Stone</div>
+                <div class="episode-dots">
+                    <span class="dot active"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                </div>
+            </div>
+            <div class="show-card">
+                <div class="thumbnail">
+                    <img src="https://via.placeholder.com/150/4682b4/ffffff?text=Pace" alt="Pace Assembly">
+                </div>
+                <div class="title">Pace Assembly</div>
+                <div class="subtitle">Joey And Rita Rogers</div>
+                <div class="episode-dots">
+                    <span class="dot active"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                </div>
+            </div>
+            <div class="show-card">
+                <div class="thumbnail">
+                    <img src="https://via.placeholder.com/150/8b4513/ffffff?text=Word" alt="Word Of Life">
+                </div>
+                <div class="title">Word Of Life Min</div>
+                <div class="subtitle">Dr. Cesar Miranda</div>
+                <div class="episode-dots">
+                    <span class="dot active"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Live Streams -->
+    <section class="content-section">
+        <h2 class="section-title">Live Streams Show</h2>
+        <div class="carousel" id="liveCarousel">
+            <div class="live-card">
+                <img src="../images/GL_live_1.png" alt="Greater Love TV 1">
+                <div class="overlay">
+                    <div class="channel-title">GREATER LOVE TV</div>
+                    <div class="channel-number">1</div>
+                </div>
+            </div>
+            <div class="live-card">
+                <img src="../images/GL_live_2.png" alt="Greater Love TV 2">
+                <div class="overlay">
+                    <div class="channel-title">GREATER LOVE TV</div>
+                    <div class="channel-number">2</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Generate minister thumbnails for hero background
+        function generateHeroBg() {
+            const heroBg = document.getElementById('heroBg');
+            const ministers = [
+                'Pastor John', 'Minister Sarah', 'Rev. Michael', 'Dr. James',
+                'Bishop David', 'Pastor Ruth', 'Elder Joseph', 'Sister Mary',
+                'Brother Paul', 'Evangelist Mark', 'Prophet Daniel', 'Teacher Rachel',
+                'Apostle Peter', 'Deacon Thomas', 'Pastor Grace', 'Minister Hope',
+                'Rev. Faith', 'Dr. Love', 'Bishop Joy', 'Pastor Peace',
+                'Elder Patience', 'Sister Kindness', 'Brother Goodness', 'Evangelist Gentle',
+                'Prophet Self', 'Teacher Control', 'Apostle Luke', 'Deacon Matthew',
+                'Pastor Andrew', 'Minister Philip', 'Rev. Nathanael', 'Dr. Simon'
+            ];
+
+            ministers.forEach((minister, index) => {
+                const thumb = document.createElement('div');
+                thumb.className = 'minister-thumb';
+                thumb.style.backgroundImage = `url('https://via.placeholder.com/150/2c3e50/ffffff?text=${minister.replace(' ', '+')}')`;
+                heroBg.appendChild(thumb);
+            });
+        }
+
+        // Add keyboard navigation
+        let currentSection = 0;
+        let currentItem = 0;
+        const sections = document.querySelectorAll('.carousel');
+
+        document.addEventListener('keydown', (e) => {
+            switch(e.key) {
+                case 'ArrowLeft':
+                    navigateHorizontal(-1);
+                    break;
+                case 'ArrowRight':
+                    navigateHorizontal(1);
+                    break;
+                case 'ArrowUp':
+                    navigateVertical(-1);
+                    break;
+                case 'ArrowDown':
+                    navigateVertical(1);
+                    break;
+                case 'Enter':
+                    selectItem();
+                    break;
+            }
+        });
+
+        function navigateHorizontal(direction) {
+            const currentCarousel = sections[currentSection];
+            const items = currentCarousel.children;
+            currentItem = Math.max(0, Math.min(items.length - 1, currentItem + direction));
+            updateFocus();
+        }
+
+        function navigateVertical(direction) {
+            currentSection = Math.max(0, Math.min(sections.length - 1, currentSection + direction));
+            currentItem = 0;
+            updateFocus();
+        }
+
+        function updateFocus() {
+            // Remove all focus states
+            document.querySelectorAll('.focused').forEach(el => el.classList.remove('focused'));
+            
+            // Add focus to current item
+            const currentCarousel = sections[currentSection];
+            const items = currentCarousel.children;
+            if (items[currentItem]) {
+                items[currentItem].classList.add('focused');
+                items[currentItem].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+            }
+        }
+
+        function selectItem() {
+            const currentCarousel = sections[currentSection];
+            const items = currentCarousel.children;
+            if (items[currentItem]) {
+                const title = items[currentItem].querySelector('.title, .channel-title')?.textContent || 'Unknown';
+                alert(`Selected: ${title}`);
+            }
+        }
+
+        // Initialize
+        generateHeroBg();
+        
+        // Add focused state styling
+        const style = document.createElement('style');
+        style.textContent = `
+            .focused {
+                outline: 3px solid white !important;
+                outline-offset: 2px;
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

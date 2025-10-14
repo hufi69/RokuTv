@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Greater Love TV - Web Test Interface</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #000;
+            color: white;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            width: 200px;
+            height: auto;
+        }
+
+        .section {
+            margin: 30px 0;
+            padding: 20px;
+            border: 1px solid #333;
+            border-radius: 10px;
+            background: #111;
+        }
+
+        .live-streams, .shows {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .stream-item, .show-item {
+            padding: 15px;
+            background: #222;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .stream-item:hover, .show-item:hover {
+            background: #333;
+        }
+
+        .stream-status {
+            color: #ff4444;
+            font-weight: bold;
+        }
+
+        .stream-status.online {
+            color: #44ff44;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .error {
+            color: #ff4444;
+            text-align: center;
+            padding: 20px;
+        }
+
+        video {
+            width: 100%;
+            max-width: 800px;
+            height: auto;
+            background: #000;
+        }
+
+        .video-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .back-button {
+            background: #444;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px;
+        }
+
+        .back-button:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="../images/logo.png" alt="Greater Love TV" class="logo">
+            <h1>Greater Love TV - Web Test Interface</h1>
+            <p>Testing the API and streaming functionality</p>
+        </div>
+
+        <div id="mainMenu">
+            <div class="section">
+                <h2>Live Streams</h2>
+                <div id="liveStreamsContainer" class="loading">Loading live streams...</div>
+            </div>
+
+            <div class="section">
+                <h2>Shows & Episodes</h2>
+                <div id="showsContainer" class="loading">Loading shows...</div>
+            </div>
+        </div>
+
+        <div id="videoPlayer" style="display: none;">
+            <button class="back-button" onclick="hideVideoPlayer()">← Back to Menu</button>
+            <div class="video-container">
+                <h3 id="videoTitle"></h3>
+                <video id="videoElement" controls autoplay style="display: none;">
+                    Your browser does not support the video tag.
+                </video>
+                <iframe id="embedPlayer" width="800" height="450" frameborder="0" allowfullscreen style="display: none;"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const PROXY_BASE_URL = 'http://localhost:3001';
+        const CASTR_API_BASE = 'https://api.castr.com/v2';
+        const ACCESS_TOKEN = '5aLoKjrNjly4';
+        const SECRET_KEY = 'UjTCq8wOj76vjXznGFzdbMRzAkFq6VlJElBQ';
+
+        // Load live streams
+        async function loadLiveStreams() {
+            try {
+                const response = await fetch(`${PROXY_BASE_URL}/livestreams`);
+                const data = await response.json();
+
+                const container = document.getElementById('liveStreamsContainer');
+                container.innerHTML = '';
+                container.className = 'live-streams';
+
+                if (data.docs && data.docs.length > 0) {
+                    data.docs.forEach(stream => {
+                        if (stream.enabled) {
+                            const streamDiv = document.createElement('div');
+                            streamDiv.className = 'stream-item';
+                            streamDiv.innerHTML = `
+                                <h4>${stream.name}</h4>
+                                <p class="stream-status ${stream.broadcasting_status === 'online' ? 'online' : ''}">${stream.broadcasting_status || 'Offline'}</p>
+                                <p>Stream Type: Live HLS</p>
+                            `;
+
+                            streamDiv.onclick = () => playStream(stream);
+                            container.appendChild(streamDiv);
+                        }
+                    });
+                } else {
+                    container.innerHTML = '<p class="error">No live streams available</p>';
+                }
+            } catch (error) {
+                console.error('Error loading live streams:', error);
+                document.getElementById('liveStreamsContainer').innerHTML = '<p class="error">Error loading live streams. Make sure the API proxy is running on port 3001.</p>';
+            }
+        }
+
+        // Load shows
+        async function loadShows() {
+            try {
+                const response = await fetch(`${PROXY_BASE_URL}/shows`);
+                const data = await response.json();
+
+                const container = document.getElementById('showsContainer');
+                container.innerHTML = '';
+                container.className = 'shows';
+
+                if (data.docs && data.docs.length > 0) {
+                    data.docs.forEach(show => {
+                        if (show.enabled && show.data && show.data.length > 0) {
+                            const showDiv = document.createElement('div');
+                            showDiv.className = 'show-item';
+                            showDiv.innerHTML = `
+                                <h4>${show.name}</h4>
+                                <p>${show.data.length} episodes available</p>
+                                <p>Type: ${show.type || 'Video Series'}</p>
+                            `;
+
+                            showDiv.onclick = () => showEpisodes(show);
+                            container.appendChild(showDiv);
+                        }
+                    });
+                } else {
+                    container.innerHTML = '<p class="error">No shows available</p>';
+                }
+            } catch (error) {
+                console.error('Error loading shows:', error);
+                document.getElementById('showsContainer').innerHTML = '<p class="error">Error loading shows</p>';
+            }
+        }
+
+        // Play stream
+        function playStream(stream) {
+            const streamUrl = stream.hls_url || stream.playback?.hls_url || stream.embed_url;
+
+            if (streamUrl) {
+                showVideoPlayer(stream.name, streamUrl);
+            } else {
+                alert('Stream URL not available for: ' + stream.name);
+            }
+        }
+
+        // Show episodes
+        function showEpisodes(show) {
+            const container = document.getElementById('showsContainer');
+            container.innerHTML = `<h3>Episodes for: ${show.name}</h3>`;
+
+            show.data.forEach(episode => {
+                if (episode.enabled) {
+                    const episodeDiv = document.createElement('div');
+                    episodeDiv.className = 'show-item';
+                    episodeDiv.innerHTML = `
+                        <h4>${episode.fileName.replace('.mp4', '')}</h4>
+                        <p>Size: ${Math.round(episode.bytes / 1024 / 1024)} MB</p>
+                        <p>Author: ${episode.author || 'Unknown'}</p>
+                    `;
+
+                    episodeDiv.onclick = () => playEpisode(episode);
+                    container.appendChild(episodeDiv);
+                }
+            });
+
+            // Add back button
+            const backButton = document.createElement('button');
+            backButton.className = 'back-button';
+            backButton.textContent = '← Back to Shows';
+            backButton.onclick = loadShows;
+            container.prepend(backButton);
+        }
+
+        // Play episode
+        function playEpisode(episode) {
+            const videoUrl = episode.playback?.hls_url || episode.playback?.embed_url;
+
+            if (videoUrl) {
+                const title = episode.fileName.replace('.mp4', '');
+                showVideoPlayer(title, videoUrl);
+            } else {
+                alert('Video URL not available for: ' + episode.fileName);
+            }
+        }
+
+        // Show video player
+        function showVideoPlayer(title, url) {
+            document.getElementById('mainMenu').style.display = 'none';
+            document.getElementById('videoPlayer').style.display = 'block';
+            document.getElementById('videoTitle').textContent = title;
+
+            const video = document.getElementById('videoElement');
+            const iframe = document.getElementById('embedPlayer');
+
+            // Check if it's a Castr embed URL or direct video URL
+            if (url.includes('player.castr.com') || url.includes('iframe')) {
+                // Use iframe for embed URLs
+                video.style.display = 'none';
+                iframe.style.display = 'block';
+                iframe.src = url;
+            } else {
+                // Use video element for direct HLS streams
+                iframe.style.display = 'none';
+                video.style.display = 'block';
+                video.src = url;
+                video.load();
+            }
+        }
+
+        // Hide video player
+        function hideVideoPlayer() {
+            document.getElementById('videoPlayer').style.display = 'none';
+            document.getElementById('mainMenu').style.display = 'block';
+
+            // Clear both video and iframe sources
+            const video = document.getElementById('videoElement');
+            const iframe = document.getElementById('embedPlayer');
+
+            video.pause();
+            video.src = '';
+            iframe.src = '';
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            loadLiveStreams();
+            loadShows();
+        });
+    </script>
+</body>
+</html>

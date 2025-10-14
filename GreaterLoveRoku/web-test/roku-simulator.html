@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roku TV Simulator - Greater Love TV</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #222;
+            color: white;
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .roku-tv-frame {
+            width: 1920px;
+            height: 1080px;
+            max-width: 90vw;
+            max-height: 80vh;
+            background: #000;
+            border: 20px solid #333;
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+        }
+
+        .roku-screen {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .roku-remote {
+            position: fixed;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #2d2d2d;
+            padding: 20px;
+            border-radius: 15px;
+            border: 2px solid #444;
+        }
+
+        .remote-button {
+            width: 60px;
+            height: 60px;
+            margin: 5px;
+            background: #444;
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .remote-button:hover {
+            background: #555;
+            transform: scale(1.1);
+        }
+
+        .remote-button:active {
+            background: #666;
+            transform: scale(0.95);
+        }
+
+        .dpad {
+            display: grid;
+            grid-template-columns: 60px 60px 60px;
+            grid-template-rows: 60px 60px 60px;
+            gap: 5px;
+            margin: 20px 0;
+        }
+
+        .remote-button.up { grid-column: 2; grid-row: 1; }
+        .remote-button.left { grid-column: 1; grid-row: 2; }
+        .remote-button.ok { grid-column: 2; grid-row: 2; background: #6a1b9a; }
+        .remote-button.right { grid-column: 3; grid-row: 2; }
+        .remote-button.down { grid-column: 2; grid-row: 3; }
+
+        .home-screen {
+            padding: 50px;
+            height: 100%;
+            box-sizing: border-box;
+        }
+
+        .logo {
+            width: 200px;
+            height: auto;
+            margin-bottom: 30px;
+        }
+
+        .main-menu {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .menu-item {
+            background: rgba(255,255,255,0.1);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 3px solid transparent;
+        }
+
+        .menu-item:hover, .menu-item.focused {
+            background: rgba(106, 27, 154, 0.3);
+            border-color: #6a1b9a;
+            transform: scale(1.05);
+        }
+
+        .menu-item h3 {
+            margin: 0 0 15px 0;
+            color: #fff;
+            font-size: 24px;
+        }
+
+        .status-indicator {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background: rgba(0,0,0,0.7);
+            border-radius: 20px;
+            font-size: 14px;
+        }
+
+        .live-indicator {
+            color: #ff4444;
+            animation: blink 1.5s infinite;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0.5; }
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .content-item {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.2s;
+            border: 2px solid transparent;
+        }
+
+        .content-item:hover, .content-item.focused {
+            transform: scale(1.05);
+            border-color: #6a1b9a;
+        }
+
+        .content-item img {
+            width: 100%;
+            height: 140px;
+            object-fit: cover;
+        }
+
+        .content-item-info {
+            padding: 15px;
+        }
+
+        .content-item h4 {
+            margin: 0 0 5px 0;
+            font-size: 16px;
+        }
+
+        .content-item p {
+            margin: 0;
+            font-size: 12px;
+            color: #ccc;
+        }
+
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0,0,0,0.7);
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+
+        .video-player {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            display: none;
+        }
+
+        .video-player video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #6a1b9a;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .instructions {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0,0,0,0.8);
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 12px;
+            max-width: 300px;
+        }
+    </style>
+</head>
+<body>
+    <div class="roku-tv-frame">
+        <div class="roku-screen" id="rokuScreen">
+            <div class="status-indicator">
+                <span class="live-indicator">● LIVE</span> Greater Love TV
+            </div>
+
+            <!-- Home Screen -->
+            <div id="homeScreen" class="home-screen">
+                <img src="../images/logo.png" alt="Greater Love TV" class="logo">
+                <h1>Greater Love TV</h1>
+                <div class="main-menu">
+                    <div class="menu-item focused" data-action="liveStreams">
+                        <h3>🔴 Live Streams</h3>
+                        <p>Watch live broadcasts and events</p>
+                    </div>
+                    <div class="menu-item" data-action="shows">
+                        <h3>📺 Shows & Episodes</h3>
+                        <p>Browse video on demand content</p>
+                    </div>
+                    <div class="menu-item" data-action="about">
+                        <h3>ℹ️ About Us</h3>
+                        <p>Learn about Greater Love Network</p>
+                    </div>
+                    <div class="menu-item" data-action="qrcodes">
+                        <h3>📱 Connect & Engage</h3>
+                        <p>QR codes for donation and apps</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Live Streams Screen -->
+            <div id="liveStreamsScreen" class="home-screen" style="display: none;">
+                <button class="back-button" onclick="showHome()">← Back</button>
+                <h2>Live Streams</h2>
+                <div id="liveStreamsGrid" class="content-grid">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        <p>Loading live streams...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Shows Screen -->
+            <div id="showsScreen" class="home-screen" style="display: none;">
+                <button class="back-button" onclick="showHome()">← Back</button>
+                <h2>Shows & Episodes</h2>
+                <div id="showsGrid" class="content-grid">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        <p>Loading shows...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Video Player -->
+            <div id="videoPlayer" class="video-player">
+                <button class="back-button" onclick="stopVideo()">← Back</button>
+                <video id="videoElement" controls></video>
+            </div>
+        </div>
+    </div>
+
+    <!-- Roku Remote -->
+    <div class="roku-remote">
+        <div style="text-align: center; margin-bottom: 15px; font-size: 12px;">
+            Roku Remote
+        </div>
+
+        <button class="remote-button" onclick="navigate('home')">🏠</button>
+
+        <div class="dpad">
+            <button class="remote-button up" onclick="navigate('up')">↑</button>
+            <button class="remote-button left" onclick="navigate('left')">←</button>
+            <button class="remote-button ok" onclick="navigate('select')">OK</button>
+            <button class="remote-button right" onclick="navigate('right')">→</button>
+            <button class="remote-button down" onclick="navigate('down')">↓</button>
+        </div>
+
+        <button class="remote-button" onclick="navigate('back')">⬅️</button>
+        <button class="remote-button" onclick="navigate('options')">☰</button>
+    </div>
+
+    <div class="instructions">
+        <strong>Roku Simulator Controls:</strong><br>
+        • Use remote buttons or keyboard<br>
+        • Arrow keys = Navigation<br>
+        • Enter = Select/OK<br>
+        • Backspace = Back<br>
+        • Home = Home button
+    </div>
+
+    <script>
+        const API_PROXY_URL = 'http://localhost:3001';
+
+        let currentScreen = 'home';
+        let currentFocusIndex = 0;
+        let currentFocusItems = [];
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            updateFocusItems();
+            loadContent();
+
+            // Keyboard controls
+            document.addEventListener('keydown', function(e) {
+                switch(e.key) {
+                    case 'ArrowUp': navigate('up'); e.preventDefault(); break;
+                    case 'ArrowDown': navigate('down'); e.preventDefault(); break;
+                    case 'ArrowLeft': navigate('left'); e.preventDefault(); break;
+                    case 'ArrowRight': navigate('right'); e.preventDefault(); break;
+                    case 'Enter': navigate('select'); e.preventDefault(); break;
+                    case 'Backspace': navigate('back'); e.preventDefault(); break;
+                    case 'Home': navigate('home'); e.preventDefault(); break;
+                }
+            });
+        });
+
+        function updateFocusItems() {
+            currentFocusItems = Array.from(document.querySelectorAll('.menu-item, .content-item'));
+            currentFocusItems.forEach((item, index) => {
+                item.classList.toggle('focused', index === currentFocusIndex);
+            });
+        }
+
+        function navigate(direction) {
+            switch(direction) {
+                case 'up':
+                    if (currentFocusIndex > 0) {
+                        currentFocusIndex--;
+                        updateFocusItems();
+                    }
+                    break;
+                case 'down':
+                    if (currentFocusIndex < currentFocusItems.length - 1) {
+                        currentFocusIndex++;
+                        updateFocusItems();
+                    }
+                    break;
+                case 'left':
+                    if (currentFocusIndex > 0) {
+                        currentFocusIndex--;
+                        updateFocusItems();
+                    }
+                    break;
+                case 'right':
+                    if (currentFocusIndex < currentFocusItems.length - 1) {
+                        currentFocusIndex++;
+                        updateFocusItems();
+                    }
+                    break;
+                case 'select':
+                    if (currentFocusItems[currentFocusIndex]) {
+                        currentFocusItems[currentFocusIndex].click();
+                    }
+                    break;
+                case 'back':
+                    if (currentScreen !== 'home') {
+                        showHome();
+                    }
+                    break;
+                case 'home':
+                    showHome();
+                    break;
+            }
+        }
+
+        function showHome() {
+            document.getElementById('homeScreen').style.display = 'block';
+            document.getElementById('liveStreamsScreen').style.display = 'none';
+            document.getElementById('showsScreen').style.display = 'none';
+            document.getElementById('videoPlayer').style.display = 'none';
+            currentScreen = 'home';
+            currentFocusIndex = 0;
+            updateFocusItems();
+        }
+
+        function loadContent() {
+            loadLiveStreams();
+            loadShows();
+        }
+
+        async function loadLiveStreams() {
+            try {
+                const response = await fetch(`${API_PROXY_URL}/livestreams`);
+                const data = await response.json();
+
+                const container = document.getElementById('liveStreamsGrid');
+                container.innerHTML = '';
+
+                if (data.docs && data.docs.length > 0) {
+                    data.docs.forEach(stream => {
+                        if (stream.enabled) {
+                            const streamDiv = document.createElement('div');
+                            streamDiv.className = 'content-item';
+                            streamDiv.innerHTML = `
+                                <img src="../images/live_placeholder.png" alt="${stream.name}">
+                                <div class="content-item-info">
+                                    <h4>${stream.name}</h4>
+                                    <p class="${stream.broadcasting_status === 'online' ? 'live-indicator' : ''}">${stream.broadcasting_status || 'Unknown'}</p>
+                                </div>
+                            `;
+                            streamDiv.onclick = () => playStream(stream);
+                            container.appendChild(streamDiv);
+                        }
+                    });
+                } else {
+                    container.innerHTML = '<p style="text-align: center; color: #ff4444;">No live streams available</p>';
+                }
+            } catch (error) {
+                document.getElementById('liveStreamsGrid').innerHTML = '<p style="text-align: center; color: #ff4444;">Error loading live streams</p>';
+            }
+        }
+
+        async function loadShows() {
+            try {
+                const response = await fetch(`${API_PROXY_URL}/shows`);
+                const data = await response.json();
+
+                const container = document.getElementById('showsGrid');
+                container.innerHTML = '';
+
+                if (data.docs && data.docs.length > 0) {
+                    data.docs.forEach(show => {
+                        if (show.enabled && show.data && show.data.length > 0) {
+                            const showDiv = document.createElement('div');
+                            showDiv.className = 'content-item';
+                            showDiv.innerHTML = `
+                                <img src="../images/show_placeholder.png" alt="${show.name}">
+                                <div class="content-item-info">
+                                    <h4>${show.name}</h4>
+                                    <p>${show.data.length} episodes</p>
+                                </div>
+                            `;
+                            showDiv.onclick = () => showEpisodes(show);
+                            container.appendChild(showDiv);
+                        }
+                    });
+                } else {
+                    container.innerHTML = '<p style="text-align: center; color: #ff4444;">No shows available</p>';
+                }
+            } catch (error) {
+                document.getElementById('showsGrid').innerHTML = '<p style="text-align: center; color: #ff4444;">Error loading shows</p>';
+            }
+        }
+
+        function playStream(stream) {
+            const streamUrl = stream.hls_url || stream.playback?.hls_url;
+            if (streamUrl) {
+                showVideoPlayer(stream.name, streamUrl);
+            } else {
+                alert('Stream URL not available');
+            }
+        }
+
+        function showEpisodes(show) {
+            const container = document.getElementById('showsGrid');
+            container.innerHTML = '';
+
+            show.data.forEach(episode => {
+                if (episode.enabled) {
+                    const episodeDiv = document.createElement('div');
+                    episodeDiv.className = 'content-item';
+                    episodeDiv.innerHTML = `
+                        <img src="../images/episode_placeholder.png" alt="${episode.fileName}">
+                        <div class="content-item-info">
+                            <h4>${episode.fileName.replace('.mp4', '')}</h4>
+                            <p>Episode</p>
+                        </div>
+                    `;
+                    episodeDiv.onclick = () => playEpisode(episode);
+                    container.appendChild(episodeDiv);
+                }
+            });
+            updateFocusItems();
+        }
+
+        function playEpisode(episode) {
+            const videoUrl = episode.playback?.hls_url || episode.playback?.embed_url;
+            if (videoUrl) {
+                showVideoPlayer(episode.fileName.replace('.mp4', ''), videoUrl);
+            } else {
+                alert('Video URL not available');
+            }
+        }
+
+        function showVideoPlayer(title, url) {
+            document.getElementById('homeScreen').style.display = 'none';
+            document.getElementById('liveStreamsScreen').style.display = 'none';
+            document.getElementById('showsScreen').style.display = 'none';
+            document.getElementById('videoPlayer').style.display = 'block';
+
+            const video = document.getElementById('videoElement');
+            video.src = url;
+            video.load();
+            currentScreen = 'video';
+        }
+
+        function stopVideo() {
+            document.getElementById('videoPlayer').style.display = 'none';
+            const video = document.getElementById('videoElement');
+            video.pause();
+            video.src = '';
+
+            if (currentScreen !== 'home') {
+                showHome();
+            }
+        }
+
+        // Menu item click handlers
+        document.addEventListener('click', function(e) {
+            const menuItem = e.target.closest('.menu-item');
+            if (menuItem) {
+                const action = menuItem.dataset.action;
+                switch(action) {
+                    case 'liveStreams':
+                        document.getElementById('homeScreen').style.display = 'none';
+                        document.getElementById('liveStreamsScreen').style.display = 'block';
+                        currentScreen = 'liveStreams';
+                        currentFocusIndex = 0;
+                        setTimeout(updateFocusItems, 100);
+                        break;
+                    case 'shows':
+                        document.getElementById('homeScreen').style.display = 'none';
+                        document.getElementById('showsScreen').style.display = 'block';
+                        currentScreen = 'shows';
+                        currentFocusIndex = 0;
+                        setTimeout(updateFocusItems, 100);
+                        break;
+                    case 'about':
+                        alert('Greater Love Network - Spreading the message of God\'s love through television ministry.');
+                        break;
+                    case 'qrcodes':
+                        alert('QR Codes for: Donation, Prayer Requests, Mobile App Download, and Tell Your Story');
+                        break;
+                }
+            }
+        });
+    </script>
+</body>
+</html>

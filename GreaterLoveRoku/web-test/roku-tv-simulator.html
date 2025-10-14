@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Greater Love TV - Roku TV Simulator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0F1419;
+            color: white;
+            overflow: hidden;
+            height: 100vh;
+            cursor: none;
+        }
+
+        /* TV Container */
+        .tv-container {
+            display: flex;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        /* Main TV Screen */
+        .tv-screen {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #0F1419;
+            position: relative;
+        }
+
+        /* Header */
+        .header {
+            background: #000000;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 60px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-circle {
+            width: 60px;
+            height: 60px;
+            background: #DC143C;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .logo-text {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-item {
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-item.active {
+            background: #DC143C;
+        }
+
+        .nav-item:hover {
+            background: #DC143C;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            background: #1e3c72;
+            width: 600px;
+            height: 400px;
+            margin: 20px 0 0 100px;
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            position: absolute;
+            top: 50px;
+            left: 20px;
+            z-index: 2;
+        }
+
+        .hero-title {
+            font-size: 36px;
+            font-weight: bold;
+            line-height: 1.2;
+            margin-bottom: 20px;
+        }
+
+        .hero-subtitle {
+            font-size: 18px;
+            margin-bottom: 30px;
+        }
+
+        .start-button {
+            background: #DC143C;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .start-button:hover {
+            background: #B22222;
+        }
+
+        /* Ministers Grid */
+        .ministers-grid {
+            position: absolute;
+            top: 100px;
+            right: 100px;
+            width: 1200px;
+            height: 800px;
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 20px;
+        }
+
+        .minister-card {
+            background: #1A2332;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            cursor: pointer;
+        }
+
+        .minister-card:hover,
+        .minister-card.focused {
+            border-color: #DC143C;
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(220, 20, 60, 0.3);
+        }
+
+        .minister-card img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+        .minister-card h3 {
+            font-size: 14px;
+            margin-bottom: 5px;
+            color: white;
+        }
+
+        .minister-card p {
+            font-size: 12px;
+            color: #ccc;
+        }
+
+        /* Roku Remote Simulator */
+        .remote-control {
+            width: 200px;
+            background: #2A2A2A;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border-left: 2px solid #444;
+        }
+
+        .remote-title {
+            color: #7C3AED;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .d-pad {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin-bottom: 20px;
+        }
+
+        .remote-btn {
+            position: absolute;
+            background: #444;
+            border: 2px solid #666;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .remote-btn:hover {
+            background: #666;
+        }
+
+        .remote-btn.up {
+            top: 0;
+            left: 40px;
+            width: 40px;
+            height: 30px;
+            border-radius: 15px 15px 5px 5px;
+        }
+
+        .remote-btn.down {
+            bottom: 0;
+            left: 40px;
+            width: 40px;
+            height: 30px;
+            border-radius: 5px 5px 15px 15px;
+        }
+
+        .remote-btn.left {
+            left: 0;
+            top: 40px;
+            width: 30px;
+            height: 40px;
+            border-radius: 15px 5px 5px 15px;
+        }
+
+        .remote-btn.right {
+            right: 0;
+            top: 40px;
+            width: 30px;
+            height: 40px;
+            border-radius: 5px 15px 15px 5px;
+        }
+
+        .remote-btn.ok {
+            top: 40px;
+            left: 40px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #DC143C;
+            border-color: #DC143C;
+            font-weight: bold;
+        }
+
+        .remote-btn.ok:hover {
+            background: #B22222;
+        }
+
+        .control-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .control-btn {
+            background: #444;
+            border: 1px solid #666;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+
+        .control-btn:hover {
+            background: #666;
+        }
+
+        .control-btn.home {
+            background: #DC143C;
+            border-color: #DC143C;
+        }
+
+        .control-btn.back {
+            background: #DC2626;
+            border-color: #EF4444;
+        }
+
+        /* Controls Overlay */
+        .controls-overlay {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 12px;
+            z-index: 1000;
+        }
+
+        .controls-overlay h4 {
+            color: #DC143C;
+            margin-bottom: 10px;
+        }
+
+        .controls-overlay p {
+            margin: 2px 0;
+            color: #ccc;
+        }
+
+        /* Loading Animation */
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 50px;
+            height: 50px;
+            border: 3px solid #333;
+            border-top: 3px solid #DC143C;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        .loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 30px;
+            height: 30px;
+            border: 2px solid #333;
+            border-top: 2px solid #DC143C;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite reverse;
+        }
+    </style>
+</head>
+<body>
+    <div class="tv-container">
+        <!-- Main TV Screen -->
+        <div class="tv-screen">
+            <!-- Header -->
+            <div class="header">
+                <div class="logo">
+                    <img src="../images/app_logo.png" alt="Greater Love Network" style="height: 50px;">
+                </div>
+                <div class="nav-menu">
+                    <div class="nav-item active">HOME</div>
+                    <div class="nav-item">ABOUT US</div>
+                    <div class="nav-item">ALL SHOWS</div>
+                    <div class="nav-item">INFO</div>
+                </div>
+            </div>
+
+            <!-- Hero Section -->
+            <div class="hero-section" style="background-image: url('../images/background.png'); background-size: cover; background-position: center;">
+                <div class="hero-content">
+                    <div class="hero-title">STREAM YOUR FAVORITE<br>BIBLE TEACHERS</div>
+                    <div class="hero-subtitle">IN ONE PLACE</div>
+                    <button class="start-button">Start Watching Live TV</button>
+                </div>
+            </div>
+
+            <!-- Ministers Grid -->
+            <div class="ministers-grid" id="ministersGrid">
+                <!-- Ministers will be loaded here -->
+            </div>
+
+            <!-- Loading Indicator -->
+            <div class="loading" id="loadingSpinner" style="display: none;"></div>
+        </div>
+
+        <!-- Roku Remote Control -->
+        <div class="remote-control">
+            <div class="remote-title">Roku Remote</div>
+            
+            <div class="d-pad">
+                <button class="remote-btn up" data-key="ArrowUp">↑</button>
+                <button class="remote-btn down" data-key="ArrowDown">↓</button>
+                <button class="remote-btn left" data-key="ArrowLeft">←</button>
+                <button class="remote-btn right" data-key="ArrowRight">→</button>
+                <button class="remote-btn ok" data-key="Enter">OK</button>
+            </div>
+
+            <div class="control-buttons">
+                <button class="control-btn home" data-key="h">Home</button>
+                <button class="control-btn back" data-key="Escape">Back</button>
+                <button class="control-btn" data-key=" ">Play</button>
+                <button class="control-btn" data-key="m">Mute</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Controls Overlay -->
+    <div class="controls-overlay">
+        <h4>Roku TV Controls</h4>
+        <p>↑↓←→ Arrow keys to navigate</p>
+        <p>Enter/Space to select</p>
+        <p>Escape to go back</p>
+        <p>H for Home</p>
+        <p>Use remote panel →</p>
+    </div>
+
+    <script>
+        // API Configuration
+        const API_BASE = 'https://api.castr.com/v2';
+        const ACCESS_TOKEN = '5aLoKjrNjly4';
+        const SECRET_KEY = 'UjTCq8wOj76vjXznGFzdbMRzAkFq6VlJElBQ';
+        const AUTH_HEADER = 'Basic ' + btoa(ACCESS_TOKEN + ':' + SECRET_KEY);
+
+        // App State
+        let currentScreen = 'home';
+        let shows = [];
+        let liveStreams = [];
+        let currentShow = null;
+        let currentEpisodes = [];
+
+        let currentFocus = 0;
+        let gridColumns = 6;
+
+        // Initialize the simulator
+        function init() {
+            loadMinisters();
+            setupEventListeners();
+            updateFocus();
+        }
+
+        // Load ministers into the grid
+        function loadMinisters() {
+            const grid = document.getElementById('ministersGrid');
+            grid.innerHTML = '';
+
+            ministers.forEach((minister, index) => {
+                const card = document.createElement('div');
+                card.className = 'minister-card';
+                card.dataset.index = index;
+                
+                card.innerHTML = `
+                    <img src="${minister.image}" alt="${minister.name}" onerror="this.src='https://via.placeholder.com/200x120/1A2332/FFFFFF?text=Minister'">
+                    <h3>${minister.name}</h3>
+                    ${minister.ministry ? `<p>${minister.ministry}</p>` : ''}
+                `;
+                
+                grid.appendChild(card);
+            });
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Keyboard controls
+            document.addEventListener('keydown', handleKeyPress);
+            
+            // Remote control buttons
+            document.querySelectorAll('.remote-btn, .control-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const key = btn.dataset.key;
+                    if (key) {
+                        handleKeyPress({ key, preventDefault: () => {} });
+                    }
+                });
+            });
+
+            // Minister card clicks
+            document.addEventListener('click', (e) => {
+                if (e.target.closest('.minister-card')) {
+                    const card = e.target.closest('.minister-card');
+                    const index = parseInt(card.dataset.index);
+                    selectMinister(index);
+                }
+            });
+        }
+
+        // Handle keyboard input
+        function handleKeyPress(e) {
+            e.preventDefault();
+            
+            switch(e.key) {
+                case 'ArrowUp':
+                    moveFocus(-gridColumns);
+                    break;
+                case 'ArrowDown':
+                    moveFocus(gridColumns);
+                    break;
+                case 'ArrowLeft':
+                    moveFocus(-1);
+                    break;
+                case 'ArrowRight':
+                    moveFocus(1);
+                    break;
+                case 'Enter':
+                case ' ':
+                    selectMinister(currentFocus);
+                    break;
+                case 'Escape':
+                    console.log('Back pressed');
+                    break;
+                case 'h':
+                    console.log('Home pressed');
+                    break;
+            }
+        }
+
+        // Move focus in the grid
+        function moveFocus(direction) {
+            const newFocus = currentFocus + direction;
+            const maxIndex = ministers.length - 1;
+            
+            if (newFocus >= 0 && newFocus <= maxIndex) {
+                currentFocus = newFocus;
+                updateFocus();
+            }
+        }
+
+        // Update visual focus
+        function updateFocus() {
+            document.querySelectorAll('.minister-card').forEach((card, index) => {
+                card.classList.toggle('focused', index === currentFocus);
+            });
+        }
+
+        // Select a minister
+        function selectMinister(index) {
+            if (index >= 0 && index < ministers.length) {
+                const minister = ministers[index];
+                alert(`Selected: ${minister.name}\n${minister.ministry ? minister.ministry : 'Minister'}`);
+            }
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

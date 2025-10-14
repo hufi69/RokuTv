@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Episode List Scene for Greater Love TV -->
+<component name="EpisodeListScene" extends="Scene">
+  <interface>
+    <field id="showData" type="node" />
+    <field id="backPressed" type="boolean" />
+  </interface>
+  <script type="text/brightscript" uri="EpisodeListScene.brs" />
+
+  <children>
+    <!-- Background Image -->
+    <Poster id="backgroundImage"
+            uri="pkg:/images/background.png"
+            width="1920"
+            height="1080"
+            translation="[0, 0]" />
+
+    <!-- Dark Overlay -->
+    <Rectangle id="backgroundOverlay"
+               color="0x00000099"
+               width="1920"
+               height="1080"
+               translation="[0, 0]" />
+
+    <!-- Header with Back Button -->
+    <Rectangle id="header"
+               color="0x000000CC"
+               width="1920"
+               height="120"
+               translation="[0, 0]" />
+
+    <!-- Back Button -->
+    <Rectangle id="backButton"
+               color="0xDC143C"
+               width="120"
+               height="60"
+               translation="[60, 30]"
+               focusable="true" />
+
+    <Label id="backButtonText"
+           translation="[80, 45]"
+           width="80"
+           height="30"
+           font="font:MediumSystemFont"
+           color="0xFFFFFF"
+           text="← Back"
+           horizAlign="center"
+           vertAlign="center" />
+
+    <!-- Show Info Section -->
+    <Label id="showTitle"
+           translation="[220, 30]"
+           width="1000"
+           height="30"
+           font="font:LargeBoldSystemFont"
+           color="0xFFFFFF"
+           text="Show Episodes"
+           horizAlign="left"
+           vertAlign="center" />
+
+    <Label id="showDescription"
+           translation="[220, 65]"
+           width="1000"
+           height="25"
+           font="font:MediumSystemFont"
+           color="0xCCCCCC"
+           text="Select an episode to watch"
+           horizAlign="left"
+           vertAlign="center" />
+
+    <!-- Episode Count -->
+    <Label id="episodeCount"
+           translation="[1550, 30]"
+           width="200"
+           height="60"
+           font="font:MediumSystemFont"
+           color="0xDC143C"
+           text="0 episodes"
+           horizAlign="center"
+           vertAlign="center" />
+
+    <!-- Episodes List -->
+    <RowList id="episodesList"
+             translation="[60, 160]"
+             itemSize="[1800, 120]"
+             rowItemSize="[1800, 120]"
+             itemSpacing="[0, 10]"
+             rowItemSpacing="[0, 10]"
+             showRowLabel="[false]"
+             visible="true" />
+
+    <!-- Loading Indicator -->
+    <BusySpinner id="loadingSpinner"
+                 translation="[940, 540]"
+                 visible="false" />
+
+    <!-- No Episodes Message -->
+    <Label id="noEpisodesLabel"
+           translation="[660, 500]"
+           width="600"
+           height="80"
+           font="font:LargeSystemFont"
+           color="0x888888"
+           text="No episodes available for this show"
+           horizAlign="center"
+           vertAlign="center"
+           visible="false" />
+
+    <!-- Video Player (initially hidden) -->
+    <Video id="videoPlayer"
+           translation="[0, 0]"
+           width="1920"
+           height="1080"
+           visible="false" />
+
+    <!-- Focus Indicator -->
+    <Rectangle id="focusIndicator"
+               color="0xDC143C"
+               width="1820"
+               height="140"
+               translation="[50, 150]"
+               visible="false" />
+  </children>
+</component>

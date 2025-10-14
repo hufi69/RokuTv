@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Task for loading live streams from API -->
+<component name="LoadLiveStreamsTask" extends="Task">
+  <interface>
+    <field id="apiUrl" type="string" />
+    <field id="content" type="node" />
+  </interface>
+  <script type="text/brightscript" uri="LoadLiveStreamsTask.brs" />
+</component>

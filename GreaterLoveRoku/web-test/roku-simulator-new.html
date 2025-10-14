@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roku TV Simulator - Greater Love TV</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0a0a0a, #1a1a2e);
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+        }
+
+        .roku-container {
+            display: flex;
+            height: 100vh;
+        }
+
+        .main-content {
+            flex: 1;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 120px;
+            background: linear-gradient(180deg, rgba(0,0,0,0.8), transparent);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 60px;
+            z-index: 10;
+        }
+
+        .logo {
+            height: 60px;
+            font-size: 28px;
+            font-weight: bold;
+            color: #fff;
+            display: flex;
+            align-items: center;
+        }
+
+        .live-indicator {
+            background: #ff0000;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .content-area {
+            position: absolute;
+            top: 120px;
+            left: 60px;
+            right: 60px;
+            bottom: 40px;
+            overflow-y: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .content-area::-webkit-scrollbar {
+            display: none;
+        }
+
+        .section {
+            margin-bottom: 60px;
+        }
+
+        .section-title {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 30px;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+            padding-bottom: 20px;
+        }
+
+        .content-card {
+            background: linear-gradient(145deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+            border-radius: 15px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            backdrop-filter: blur(10px);
+            position: relative;
+        }
+
+        .content-card:hover, .content-card.focused {
+            transform: scale(1.05);
+            border-color: #6a1b9a;
+            box-shadow: 0 20px 40px rgba(106, 27, 154, 0.3);
+            z-index: 5;
+        }
+
+        .card-image {
+            width: 100%;
+            height: 160px;
+            background: linear-gradient(45deg, #6a1b9a, #4a148c);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .card-image .placeholder-icon {
+            font-size: 48px;
+            opacity: 0.7;
+        }
+
+        .live-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #ff0000;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .card-content {
+            padding: 20px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #fff;
+            line-height: 1.3;
+        }
+
+        .card-subtitle {
+            font-size: 14px;
+            color: #ccc;
+            margin-bottom: 12px;
+        }
+
+        .card-info {
+            font-size: 12px;
+            color: #999;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .episode-count {
+            background: rgba(106, 27, 154, 0.3);
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+        }
+
+        .roku-remote {
+            position: fixed;
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: linear-gradient(145deg, #2d2d2d, #1a1a1a);
+            padding: 25px 20px;
+            border-radius: 25px;
+            border: 2px solid #444;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+
+        .remote-title {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 12px;
+            color: #ccc;
+            font-weight: bold;
+        }
+
+        .remote-button {
+            width: 50px;
+            height: 50px;
+            margin: 6px;
+            background: linear-gradient(145deg, #444, #333);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+
+        .remote-button:hover {
+            background: linear-gradient(145deg, #555, #444);
+            transform: scale(1.1);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+        }
+
+        .remote-button:active {
+            transform: scale(0.95);
+        }
+
+        .dpad {
+            display: grid;
+            grid-template-columns: 50px 50px 50px;
+            grid-template-rows: 50px 50px 50px;
+            gap: 6px;
+            margin: 20px 0;
+            justify-content: center;
+        }
+
+        .remote-button.up { grid-column: 2; grid-row: 1; }
+        .remote-button.left { grid-column: 1; grid-row: 2; }
+        .remote-button.ok {
+            grid-column: 2;
+            grid-row: 2;
+            background: linear-gradient(145deg, #6a1b9a, #4a148c);
+            font-weight: bold;
+        }
+        .remote-button.right { grid-column: 3; grid-row: 2; }
+        .remote-button.down { grid-column: 2; grid-row: 3; }
+
+        .video-player {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            z-index: 1000;
+            display: none;
+            flex-direction: column;
+        }
+
+        .video-header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background: linear-gradient(180deg, rgba(0,0,0,0.8), transparent);
+            display: flex;
+            align-items: center;
+            padding: 0 40px;
+            z-index: 1001;
+        }
+
+        .back-button {
+            background: rgba(0,0,0,0.7);
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.2s;
+        }
+
+        .back-button:hover {
+            background: rgba(0,0,0,0.9);
+        }
+
+        .video-element {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .loading-spinner {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 200px;
+        }
+
+        .spinner {
+            border: 4px solid rgba(255,255,255,0.3);
+            border-top: 4px solid #6a1b9a;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            text-align: center;
+            color: #ff6b6b;
+            font-size: 16px;
+            padding: 40px;
+            background: rgba(255,107,107,0.1);
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .navigation-hint {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 12px;
+            color: #ccc;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+    <div class="roku-container">
+        <div class="main-content">
+            <div class="header">
+                <div class="logo">📺 Greater Love TV</div>
+                <div class="live-indicator">● LIVE</div>
+            </div>
+
+            <div class="content-area">
+                <!-- Live Streams Section -->
+                <div class="section">
+                    <h2 class="section-title">🔴 Live Streams</h2>
+                    <div id="liveStreamsGrid" class="content-grid">
+                        <div class="loading-spinner">
+                            <div class="spinner"></div>
+                            <p>Loading live streams...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Shows Section -->
+                <div class="section">
+                    <h2 class="section-title">📺 Shows & Episodes</h2>
+                    <div id="showsGrid" class="content-grid">
+                        <div class="loading-spinner">
+                            <div class="spinner"></div>
+                            <p>Loading shows...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Roku Remote -->
+        <div class="roku-remote">
+            <div class="remote-title">ROKU REMOTE</div>
+
+            <button class="remote-button" onclick="navigate('home')">🏠</button>
+
+            <div class="dpad">
+                <button class="remote-button up" onclick="navigate('up')">↑</button>
+                <button class="remote-button left" onclick="navigate('left')">←</button>
+                <button class="remote-button ok" onclick="navigate('select')">OK</button>
+                <button class="remote-button right" onclick="navigate('right')">→</button>
+                <button class="remote-button down" onclick="navigate('down')">↓</button>
+            </div>
+
+            <button class="remote-button" onclick="navigate('back')">⬅</button>
+            <button class="remote-button" onclick="navigate('options')">☰</button>
+        </div>
+    </div>
+
+    <!-- Video Player -->
+    <div id="videoPlayer" class="video-player">
+        <div class="video-header">
+            <button class="back-button" onclick="stopVideo()">← Back to Home</button>
+        </div>
+        <video id="videoElement" class="video-element" controls></video>
+    </div>
+
+    <div class="navigation-hint">
+        Use arrow keys to navigate • Enter to select • Backspace to go back
+    </div>
+
+    <script>
+        const API_PROXY_URL = 'http://localhost:3001';
+
+        let currentFocusIndex = 0;
+        let currentFocusItems = [];
+        let isVideoPlaying = false;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            loadContent();
+            updateFocus();
+
+            // Keyboard controls
+            document.addEventListener('keydown', function(e) {
+                if (isVideoPlaying) return;
+
+                switch(e.key) {
+                    case 'ArrowUp': navigate('up'); e.preventDefault(); break;
+                    case 'ArrowDown': navigate('down'); e.preventDefault(); break;
+                    case 'ArrowLeft': navigate('left'); e.preventDefault(); break;
+                    case 'ArrowRight': navigate('right'); e.preventDefault(); break;
+                    case 'Enter': navigate('select'); e.preventDefault(); break;
+                    case 'Backspace': navigate('back'); e.preventDefault(); break;
+                    case 'Home': navigate('home'); e.preventDefault(); break;
+                }
+            });
+        });
+
+        function updateFocus() {
+            currentFocusItems = Array.from(document.querySelectorAll('.content-card'));
+            currentFocusItems.forEach((item, index) => {
+                item.classList.toggle('focused', index === currentFocusIndex);
+            });
+        }
+
+        function navigate(direction) {
+            const itemsPerRow = Math.floor((window.innerWidth - 240) / 310); // Approximate items per row
+
+            switch(direction) {
+                case 'up':
+                    if (currentFocusIndex >= itemsPerRow) {
+                        currentFocusIndex -= itemsPerRow;
+                        updateFocus();
+                        scrollToFocused();
+                    }
+                    break;
+                case 'down':
+                    if (currentFocusIndex + itemsPerRow < currentFocusItems.length) {
+                        currentFocusIndex += itemsPerRow;
+                        updateFocus();
+                        scrollToFocused();
+                    }
+                    break;
+                case 'left':
+                    if (currentFocusIndex > 0) {
+                        currentFocusIndex--;
+                        updateFocus();
+                        scrollToFocused();
+                    }
+                    break;
+                case 'right':
+                    if (currentFocusIndex < currentFocusItems.length - 1) {
+                        currentFocusIndex++;
+                        updateFocus();
+                        scrollToFocused();
+                    }
+                    break;
+                case 'select':
+                    if (currentFocusItems[currentFocusIndex]) {
+                        currentFocusItems[currentFocusIndex].click();
+                    }
+                    break;
+                case 'back':
+                    if (isVideoPlaying) {
+                        stopVideo();
+                    }
+                    break;
+                case 'home':
+                    if (isVideoPlaying) {
+                        stopVideo();
+                    }
+                    currentFocusIndex = 0;
+                    updateFocus();
+                    document.querySelector('.content-area').scrollTop = 0;
+                    break;
+            }
+        }
+
+        function scrollToFocused() {
+            const focused = currentFocusItems[currentFocusIndex];
+            if (focused) {
+                focused.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        async function loadContent() {
+            await Promise.all([loadLiveStreams(), loadShows()]);
+            updateFocus();
+        }
+
+        async function loadLiveStreams() {
+            try {
+                const response = await fetch(`${API_PROXY_URL}/livestreams`);
+                const data = await response.json();
+
+                const container = document.getElementById('liveStreamsGrid');
+                container.innerHTML = '';
+
+                if (data.docs && data.docs.length > 0) {
+                    data.docs.forEach(stream => {
+                        if (stream.enabled) {
+                            const streamCard = createStreamCard(stream);
+                            container.appendChild(streamCard);
+                        }
+                    });
+                } else {
+                    container.innerHTML = '<div class="error-message">No live streams available</div>';
+                }
+            } catch (error) {
+                console.error('Error loading live streams:', error);
+                document.getElementById('liveStreamsGrid').innerHTML = '<div class="error-message">Error loading live streams</div>';
+            }
+        }
+
+        async function loadShows() {
+            try {
+                const response = await fetch(`${API_PROXY_URL}/shows`);
+                const data = await response.json();
+
+                const container = document.getElementById('showsGrid');
+                container.innerHTML = '';
+
+                if (data.docs && data.docs.length > 0) {
+                    data.docs.forEach(show => {
+                        if (show.enabled) {
+                            const showCard = createShowCard(show);
+                            container.appendChild(showCard);
+                        }
+                    });
+                } else {
+                    container.innerHTML = '<div class="error-message">No shows available</div>';
+                }
+            } catch (error) {
+                console.error('Error loading shows:', error);
+                document.getElementById('showsGrid').innerHTML = '<div class="error-message">Error loading shows</div>';
+            }
+        }
+
+        function createStreamCard(stream) {
+            const card = document.createElement('div');
+            card.className = 'content-card';
+            card.innerHTML = `
+                <div class="card-image">
+                    <div class="placeholder-icon">📺</div>
+                    <div class="live-badge">LIVE</div>
+                </div>
+                <div class="card-content">
+                    <div class="card-title">${stream.name}</div>
+                    <div class="card-subtitle">Live Stream</div>
+                    <div class="card-info">
+                        <span>Status: ${stream.broadcasting_status || 'Unknown'}</span>
+                    </div>
+                </div>
+            `;
+            card.onclick = () => playStream(stream);
+            return card;
+        }
+
+        function createShowCard(show) {
+            const card = document.createElement('div');
+            card.className = 'content-card';
+            const episodeCount = show.data ? show.data.length : 0;
+
+            card.innerHTML = `
+                <div class="card-image">
+                    <div class="placeholder-icon">🎬</div>
+                </div>
+                <div class="card-content">
+                    <div class="card-title">${show.name}</div>
+                    <div class="card-subtitle">${show.type === 'vod' ? 'Video Series' : 'Show'}</div>
+                    <div class="card-info">
+                        <span>Episodes: ${episodeCount}</span>
+                        <div class="episode-count">${episodeCount} EP</div>
+                    </div>
+                </div>
+            `;
+            card.onclick = () => showEpisodes(show);
+            return card;
+        }
+
+        function playStream(stream) {
+            const streamUrl = stream.hls_url || stream.playback?.hls_url;
+            if (streamUrl) {
+                showVideoPlayer(stream.name, streamUrl);
+            } else {
+                alert('Stream URL not available');
+            }
+        }
+
+        function showEpisodes(show) {
+            if (!show.data || show.data.length === 0) {
+                alert('No episodes available for this show');
+                return;
+            }
+
+            // Create episode selection screen
+            const showsGrid = document.getElementById('showsGrid');
+            showsGrid.innerHTML = `
+                <div class="content-card" onclick="goBackToShows()">
+                    <div class="card-image">
+                        <div class="placeholder-icon">⬅</div>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-title">Back to Shows</div>
+                    </div>
+                </div>
+            `;
+
+            show.data.forEach((episode, index) => {
+                if (episode.enabled) {
+                    const episodeCard = createEpisodeCard(episode, index + 1);
+                    showsGrid.appendChild(episodeCard);
+                }
+            });
+
+            // Scroll to shows section
+            document.querySelector('.section:nth-child(2)').scrollIntoView({ behavior: 'smooth' });
+            currentFocusIndex = 0;
+            updateFocus();
+        }
+
+        function createEpisodeCard(episode, episodeNumber) {
+            const card = document.createElement('div');
+            card.className = 'content-card';
+
+            card.innerHTML = `
+                <div class="card-image">
+                    <div class="placeholder-icon">▶️</div>
+                </div>
+                <div class="card-content">
+                    <div class="card-title">${episode.fileName || `Episode ${episodeNumber}`}</div>
+                    <div class="card-subtitle">Video Episode</div>
+                    <div class="card-info">
+                        <span>Duration: ${episode.mediaInfo?.durationMins || 'Unknown'} min</span>
+                    </div>
+                </div>
+            `;
+            card.onclick = () => playEpisode(episode);
+            return card;
+        }
+
+        function goBackToShows() {
+            loadShows().then(() => {
+                currentFocusIndex = 0;
+                updateFocus();
+            });
+        }
+
+        function playEpisode(episode) {
+            const videoUrl = episode.playback?.embed_url;
+            if (videoUrl) {
+                showVideoPlayer(episode.fileName || 'Episode', videoUrl);
+            } else {
+                alert('Video URL not available');
+            }
+        }
+
+        function showVideoPlayer(title, url) {
+            const videoPlayer = document.getElementById('videoPlayer');
+            const video = document.getElementById('videoElement');
+
+            video.src = url;
+            videoPlayer.style.display = 'flex';
+            isVideoPlaying = true;
+
+            video.load();
+            video.play().catch(e => {
+                console.error('Error playing video:', e);
+                alert('Unable to play video. URL may not be accessible.');
+                stopVideo();
+            });
+        }
+
+        function stopVideo() {
+            const videoPlayer = document.getElementById('videoPlayer');
+            const video = document.getElementById('videoElement');
+
+            video.pause();
+            video.src = '';
+            videoPlayer.style.display = 'none';
+            isVideoPlaying = false;
+
+            updateFocus();
+        }
+    </script>
+</body>
+</html>

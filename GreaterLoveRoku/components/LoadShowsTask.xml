@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Task for loading shows from API -->
+<component name="LoadShowsTask" extends="Task">
+  <interface>
+    <field id="apiUrl" type="string" />
+    <field id="content" type="node" />
+  </interface>
+  <script type="text/brightscript" uri="LoadShowsTask.brs" />
+</component>

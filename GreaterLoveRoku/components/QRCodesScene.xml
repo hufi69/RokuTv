@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- QR Codes Scene for Connect functionality -->
+<component name="QRCodesScene" extends="Scene">
+  <interface>
+    <field id="backPressed" type="boolean" />
+  </interface>
+  <script type="text/brightscript" uri="QRCodesScene.brs" />
+
+  <children>
+    <!-- Background -->
+    <Rectangle id="background"
+               color="0x141414"
+               width="1920"
+               height="1080" />
+
+    <!-- Header -->
+    <Rectangle id="header"
+               color="0xDC143C"
+               width="1920"
+               height="100"
+               translation="[0, 0]" />
+
+    <Label id="headerTitle"
+           translation="[60, 25]"
+           width="600"
+           height="50"
+           font="font:LargeBoldSystemFont"
+           color="0xFFFFFF"
+           text="Connect With Greater Love Network"
+           horizAlign="left"
+           vertAlign="center" />
+
+    <!-- Back Button -->
+    <Rectangle id="backButton"
+               color="0xB22222"
+               width="120"
+               height="40"
+               translation="[60, 140]" />
+
+    <Label id="backLabel"
+           translation="[70, 145]"
+           width="100"
+           height="30"
+           font="font:MediumSystemFont"
+           color="0xFFFFFF"
+           text="← Back"
+           horizAlign="center"
+           vertAlign="center" />
+
+    <!-- QR Code Grid -->
+    <!-- Donate QR -->
+    <Rectangle id="donateCard"
+               color="0x2A2A2A"
+               width="400"
+               height="500"
+               translation="[200, 250]" />
+
+    <Poster id="donateQR"
+            uri="pkg:/images/donate_qrcode.png"
+            width="200"
+            height="200"
+            translation="[300, 300]" />
+
+    <Label id="donateTitle"
+           translation="[200, 520]"
+           width="400"
+           height="40"
+           font="font:MediumBoldSystemFont"
+           color="0xFFFFFF"
+           text="Donate"
+           horizAlign="center"
+           vertAlign="center" />
+
+    <Label id="donateDesc"
+           translation="[200, 560]"
+           width="400"
+           height="30"
+           font="font:SmallSystemFont"
+           color="0xCCCCCC"
+           text="Support our ministry"
+           horizAlign="center"
+           vertAlign="center" />
+
+    <!-- Tell Your Story QR -->
+    <Rectangle id="storyCard"
+               color="0x2A2A2A"
+               width="400"
+               height="500"
+               translation="[650, 250]" />
+
+    <Poster id="storyQR"
+            uri="pkg:/images/tell_your_story_qrcode.png"
+            width="200"
+            height="200"
+            translation="[750, 300]" />
+
+    <Label id="storyTitle"
+           translation="[650, 520]"
+           width="400"
+           height="40"
+           font="font:MediumBoldSystemFont"
+           color="0xFFFFFF"
+           text="Tell Your Story"
+           horizAlign="center"
+           vertAlign="center" />
+
+    <Label id="storyDesc"
+           translation="[650, 560]"
+           width="400"
+           height="30"
+           font="font:SmallSystemFont"
+           color="0xCCCCCC"
+           text="Share your testimony"
+           horizAlign="center"
+           vertAlign="center" />
+
+    <!-- Prayer Request QR -->
+    <Rectangle id="prayerCard"
+               color="0x2A2A2A"
+               width="400"
+               height="500"
+               translation="[1100, 250]" />
+
+    <Poster id="prayerQR"
+            uri="pkg:/images/prayer_request_qrcode.png"
+            width="200"
+            height="200"
+            translation="[1200, 300]" />
+
+    <Label id="prayerTitle"
+           translation="[1100, 520]"
+           width="400"
+           height="40"
+           font="font:MediumBoldSystemFont"
+           color="0xFFFFFF"
+           text="Prayer Request"
+           horizAlign="center"
+           vertAlign="center" />
+
+    <Label id="prayerDesc"
+           translation="[1100, 560]"
+           width="400"
+           height="30"
+           font="font:SmallSystemFont"
+           color="0xCCCCCC"
+           text="Submit prayer requests"
+           horizAlign="center"
+           vertAlign="center" />
+
+    <!-- Download App QR -->
+    <Rectangle id="appCard"
+               color="0x2A2A2A"
+               width="400"
+               height="500"
+               translation="[1550, 250]" />
+
+    <Poster id="appQR"
+            uri="pkg:/images/download_mobile_app_qrcode.png"
+            width="200"
+            height="200"
+            translation="[1650, 300]" />
+
+    <Label id="appTitle"
+           translation="[1550, 520]"
+           width="400"
+           height="40"
+           font="font:MediumBoldSystemFont"
+           color="0xFFFFFF"
+           text="Download Mobile App"
+           horizAlign="center"
+           vertAlign="center" />
+
+    <Label id="appDesc"
+           translation="[1550, 560]"
+           width="400"
+           height="30"
+           font="font:SmallSystemFont"
+           color="0xCCCCCC"
+           text="Get our mobile app"
+           horizAlign="center"
+           vertAlign="center" />
+
+    <!-- Focus Indicator -->
+    <Rectangle id="focusIndicator"
+               color="0xDC143C"
+               width="420"
+               height="520"
+               translation="[190, 240]"
+               visible="false" />
+  </children>
+</component>

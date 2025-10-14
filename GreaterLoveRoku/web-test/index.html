@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Greater Love TV - Minister Grid Design</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0F1419;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        .header {
+            background: #000000;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 60px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-circle {
+            width: 60px;
+            height: 60px;
+            background: #DC143C;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .logo-text {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-item {
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-item.active {
+            background: #DC143C;
+        }
+
+        .nav-item:hover {
+            background: #DC143C;
+        }
+
+        .main-content {
+            display: flex;
+            min-height: calc(100vh - 80px);
+        }
+
+        .hero-section {
+            background: #1e3c72;
+            width: 600px;
+            height: 400px;
+            margin: 20px 0 0 100px;
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            position: absolute;
+            top: 50px;
+            left: 20px;
+            z-index: 2;
+        }
+
+        .hero-title {
+            font-size: 36px;
+            font-weight: bold;
+            line-height: 1.2;
+            margin-bottom: 20px;
+        }
+
+        .hero-subtitle {
+            font-size: 18px;
+            margin-bottom: 30px;
+        }
+
+        .start-button {
+            background: #DC143C;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .start-button:hover {
+            background: #B22222;
+        }
+
+        .ministers-grid {
+            flex: 1;
+            padding: 100px 100px 0 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+        }
+
+        .minister-card {
+            background: #1A2332;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            cursor: pointer;
+        }
+
+        .minister-card:hover {
+            border-color: #DC143C;
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(220, 20, 60, 0.3);
+        }
+
+        .minister-card img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+        .minister-card h3 {
+            font-size: 14px;
+            margin-bottom: 5px;
+            color: white;
+        }
+
+        .minister-card p {
+            font-size: 12px;
+            color: #ccc;
+        }
+
+        @media (max-width: 1200px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .hero-section {
+                width: 100%;
+                margin: 20px;
+            }
+            
+            .ministers-grid {
+                padding: 20px;
+                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">
+            <div class="logo-circle">GL</div>
+            <div class="logo-text">GREATER LOVE TV</div>
+        </div>
+        <div class="nav-menu">
+            <div class="nav-item active">HOME</div>
+            <div class="nav-item">ABOUT US</div>
+            <div class="nav-item">ALL SHOWS</div>
+            <div class="nav-item">INFO</div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="hero-section">
+            <div class="hero-content">
+                <div class="hero-title">MEET OUR<br>INSPIRING<br>MINISTERS</div>
+                <div class="hero-subtitle">IN ONE PLACE</div>
+                <button class="start-button">Start Exploring</button>
+            </div>
+        </div>
+
+        <div class="ministers-grid" id="ministersGrid">
+            <!-- Ministers will be loaded here -->
+        </div>
+    </div>
+
+    <script>
+        const ministers = [
+            {name: "BILLY JOE LEWIS", image: "https://via.placeholder.com/200x120/DC143C/FFFFFF?text=BILLY+JOE+LEWIS", ministry: ""},
+            {name: "ALTON WILLIAMS", image: "https://via.placeholder.com/200x120/DC143C/FFFFFF?text=ALTON+WILLIAMS", ministry: ""},
+            {name: "WYNN", image: "https://via.placeholder.com/200x120/DC143C/FFFFFF?text=WYNN", ministry: "WORD OF LIFE MINISTRIES"},
+            {name: "TODD HOSKINS", image: "https://via.placeholder.com/200x120/DC143C/FFFFFF?text=TODD+HOSKINS", ministry: "Redemption Today"},
+            {name: "HILL", image: "https://via.placeholder.com/200x120/DC143C/FFFFFF?text=HILL", ministry: "CREATED TO PRAISE"},
+            {name: "SING GOD'S WORD", image: "https://via.placeholder.com/200x120/DC143C/FFFFFF?text=SING+GOD'S+WORD", ministry: ""},
+            {name: "Sandra HANCOCK", image: "https://via.placeholder.com/200x120/DC143C/FFFFFF?text=Sandra+HANCOCK", ministry: ""},
+            {name: "SAMMY REED", image: "https://via.placeholder.com/200x120/DC143C/FFFFFF?text=SAMMY+REED", ministry: ""},
+            {name: "Ronnie PHILLIPS", image: "https://via.placeholder.com/200x120/DC143C/FFFFFF?text=Ronnie+PHILLIPS", ministry: ""},
+            {name: "LOVE & UNITY", image: "https://via.placeholder.com/200x120/DC143C/FFFFFF?text=LOVE+%26+UNITY", ministry: "RONALD & OSIE HILL"},
+            {name: "KEITH NIX", image: "https://via.placeholder.com/200x120/DC143C/FFFFFF?text=KEITH+NIX", ministry: ""},
+            {name: "THE AVENUE", image: "https://via.placeholder.com/200x120/DC143C/FFFFFF?text=THE+AVENUE", ministry: ""},
+            {name: "APOSTLE JONATHAN STIDHAM", image: "https://via.placeholder.com/200x120/DC143C/FFFFFF?text=JONATHAN+STIDHAM", ministry: ""},
+            {name: "John + Gina MINOR", image: "https://via.placeholder.com/200x120/DC143C/FFFFFF?text=John+%2B+Gina+MINOR", ministry: ""},
+            {name: "JOEY ROGERS", image: "https://via.placeholder.com/200x120/DC143C/FFFFFF?text=JOEY+ROGERS", ministry: ""},
+            {name: "DWIGHT JONES", image: "https://via.placeholder.com/200x120/DC143C/FFFFFF?text=DWIGHT+JONES", ministry: ""},
+            {name: "NEW DAY MINISTRIES", image: "https://via.placeholder.com/200x120/DC143C/FFFFFF?text=NEW+DAY+MINISTRIES", ministry: ""},
+            {name: "THE VOICE OF EVANGELISM", image: "https://via.placeholder.com/200x120/DC143C/FFFFFF?text=VOICE+OF+EVANGELISM", ministry: ""},
+            {name: "DANNY EMERSON", image: "https://via.placeholder.com/200x120/DC143C/FFFFFF?text=DANNY+EMERSON", ministry: ""}
+        ];
+
+        function loadMinisters() {
+            const grid = document.getElementById('ministersGrid');
+            grid.innerHTML = '';
+
+            ministers.forEach((minister, index) => {
+                const card = document.createElement('div');
+                card.className = 'minister-card';
+                
+                card.innerHTML = `
+                    <img src="${minister.image}" alt="${minister.name}" onerror="this.src='https://via.placeholder.com/200x120/1A2332/FFFFFF?text=Minister'">
+                    <h3>${minister.name}</h3>
+                    ${minister.ministry ? `<p>${minister.ministry}</p>` : ''}
+                `;
+                
+                card.addEventListener('click', () => {
+                    alert(`Selected: ${minister.name}\n${minister.ministry ? minister.ministry : 'Minister'}`);
+                });
+                
+                grid.appendChild(card);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', loadMinisters);
+    </script>
+</body>
+</html>
