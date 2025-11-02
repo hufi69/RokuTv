@@ -73,20 +73,12 @@ sub testAPIConnectivity()
     if request <> invalid
         print "✓ HTTP client available"
 
-        request.SetUrl("https://api.castr.com/v2/videos?page=1&per_page=10")
+        request.SetUrl("https://greaterlove.tv/wp-json/myplugin/v1/castrvod")
         request.SetRequest("GET")
+        request.AddHeader("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15")
+        request.AddHeader("Accept", "application/json, text/plain, */*")
+        request.AddHeader("Referer", "https://greaterlove.tv/")
         request.AddHeader("Content-Type", "application/json")
-        request.AddHeader("Accept", "application/json")
-
-        ' Add Basic Authentication for Castr API
-        accessToken = "5aLoKjrNjly4"
-        secretKey = "UjTCq8wOj76vjXznGFzdbMRzAkFq6VlJElBQ"
-        credentials = accessToken + ":" + secretKey
-
-        ' Use pre-computed Base64 for BrightScript compatibility
-        ' Base64 of "5aLoKjrNjly4:UjTCq8wOj76vjXznGFzdbMRzAkFq6VlJElBQ"
-        authHeader = "Basic NWFMb0tqck5qbHk0OlVqVENxOHdPajc2dmpYem5HRnpkYk1SekFrRnE2VmxKRWxCUQ=="
-        request.AddHeader("Authorization", authHeader)
 
         ' Try to make request with timeout
         request.SetPort(CreateObject("roMessagePort"))
@@ -101,14 +93,24 @@ sub testAPIConnectivity()
 
                     ' Try to parse JSON
                     json = ParseJson(response)
-                    if json <> invalid and json.docs <> invalid
-                        print "✓ Found", json.docs.Count(), "video collections in API"
+                    if json <> invalid and json.status = "success" and json.data <> invalid
+                        print "✓ Found", json.total_shows, "shows in Greater Love TV API"
 
                         ' Show first show name if available
-                        if json.docs.Count() > 0 and json.docs[0].name <> invalid
-                            print "✓ Sample show:", json.docs[0].name
-                            if json.docs[0].data <> invalid
-                                print "✓ Episodes in first show:", json.docs[0].data.Count()
+                        showNames = json.data.keys()
+                        if showNames.Count() > 0
+                            firstShowName = showNames[0]
+                            firstShowData = json.data[firstShowName]
+                            print "✓ Sample show:", firstShowName
+                            if firstShowData <> invalid and firstShowData.episodes <> invalid
+                                print "✓ Episodes in first show:", firstShowData.episodes.Count()
+                                if firstShowData.episodes.Count() > 0
+                                    firstEpisode = firstShowData.episodes[0]
+                                    print "✓ Sample episode:", firstEpisode.episode_name
+                                    if firstEpisode.direct_url <> invalid
+                                        print "✓ Direct HLS URL available for playback"
+                                    end if
+                                end if
                             end if
                         end if
                     else

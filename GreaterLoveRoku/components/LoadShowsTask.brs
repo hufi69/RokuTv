@@ -1,27 +1,22 @@
-' Task for loading shows from Castr API
+' Task for loading shows from Greater Love TV API
 sub init()
     m.top.functionName = "loadShows"
 end sub
 
 sub loadShows()
-    print "Loading shows from Castr API:"; m.top.apiUrl
+    print "Loading shows from Greater Love TV API:"; m.top.apiUrl
 
-    ' Create HTTP request with authentication
+    ' Create HTTP request with proper headers
     request = createObject("roUrlTransfer")
     request.setUrl(m.top.apiUrl)
     request.setCertificatesFile("common:/certs/ca-bundle.crt")
     request.setRequest("GET")
-    request.addHeader("Content-Type", "application/json")
-    request.addHeader("Accept", "application/json")
-
-    ' Add Basic Authentication for Castr API
-    accessToken = "5aLoKjrNjly4"
-    secretKey = "UjTCq8wOj76vjXznGFzdbMRzAkFq6VlJElBQ"
-    credentials = accessToken + ":" + secretKey
     
-    ' Use pre-computed Base64 for BrightScript compatibility
-    authHeader = "Basic NWFMb0tqck5qbHk0OlVqVENxOHdPajc2dmpYem5HRnpkYk1SekFrRnE2VmxKRWxCUQ=="
-    request.addHeader("Authorization", authHeader)
+    ' Add required headers for Greater Love TV API
+    request.addHeader("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15")
+    request.addHeader("Accept", "application/json, text/plain, */*")
+    request.addHeader("Referer", "https://greaterlove.tv/")
+    request.addHeader("Content-Type", "application/json")
 
     ' Make request
     response = request.getToString()
@@ -30,61 +25,61 @@ sub loadShows()
         ' Parse JSON response
         json = ParseJson(response)
 
-        if json <> invalid and json.docs <> invalid then
-            print "Successfully loaded"; json.docs.count(); "shows from Castr API"
+        if json <> invalid and json.status = "success" and json.data <> invalid then
+            print "Successfully loaded"; json.total_shows; "shows from Greater Love TV API"
             
             ' Convert to content nodes
             contentArray = []
 
-            for each show in json.docs
-                if show.enabled = true and show.data <> invalid and show.data.count() > 0
+            ' Iterate through shows in the data object
+            for each showName in json.data
+                showData = json.data[showName]
+                if showData <> invalid and showData.episodes <> invalid and showData.episodes.count() > 0
                     showNode = createObject("roSGNode", "ContentNode")
 
                     ' Convert episodes with enhanced data
                     episodes = []
-                    for each episode in show.data
-                        if episode.enabled = true
-                            episodeNode = createObject("roSGNode", "ContentNode")
-                            
-                            ' Generate thumbnail URL from video ID
-                            videoId = episode.id.replace(".mp4", "")
-                            thumbnailUrl = "https://player.castr.com/api/v1/vod/" + videoId + "/thumbnail"
-                            
-                            ' Construct proper video URL for Roku playback
-                            videoUrl = ""
-                            if episode.playback <> invalid and episode.playback.embed_url <> invalid
-                                videoUrl = episode.playback.embed_url
-                            end if
-                            
-                            episodeNode.addFields({
-                                "episodeId": episode.id,
-                                "fileName": episode.fileName,
-                                "enabled": episode.enabled,
-                                "bytes": episode.bytes,
-                                "playback": episode.playback,
-                                "url": videoUrl,
-                                "title": episode.fileName.replace(".mp4", ""),
-                                "description": "Duration: " + getFieldValue(episode.mediaInfo, "durationMins").toStr() + " minutes",
-                                "hdPosterUrl": thumbnailUrl,
-                                "creationTime": getFieldValue(episode, "creationTime"),
-                                "author": getFieldValue(episode, "author"),
-                                "thumbnailUrl": thumbnailUrl,
-                                "duration": getFieldValue(episode.mediaInfo, "durationMins"),
-                                "durationSeconds": getFieldValue(episode.mediaInfo, "duration"),
-                                "width": getFieldValue(episode.mediaInfo, "width"),
-                                "height": getFieldValue(episode.mediaInfo, "height"),
-                                "fps": getFieldValue(episode.mediaInfo, "fps")
-                            })
-                            episodes.push(episodeNode)
+                    for each episode in showData.episodes
+                        episodeNode = createObject("roSGNode", "ContentNode")
+                        
+                        ' Use direct_url (HLS) for better Roku playback
+                        videoUrl = ""
+                        if episode.direct_url <> invalid and episode.direct_url <> ""
+                            videoUrl = episode.direct_url
+                        else if episode.embed_url <> invalid and episode.embed_url <> ""
+                            videoUrl = episode.embed_url
                         end if
+                        
+                        ' Generate thumbnail URL from video ID
+                        videoId = extractVideoIdFromUrl(episode.embed_url)
+                        thumbnailUrl = ""
+                        if videoId <> ""
+                            thumbnailUrl = "https://player.castr.com/api/v1/vod/" + videoId + "/thumbnail"
+                        end if
+                        
+                        episodeNode.addFields({
+                            "episodeId": episode.id.toStr(),
+                            "fileName": episode.episode_name,
+                            "enabled": true,
+                            "url": videoUrl,
+                            "direct_url": episode.direct_url,
+                            "embed_url": episode.embed_url,
+                            "title": episode.episode_name,
+                            "description": "Episode " + episode.id.toStr(),
+                            "hdPosterUrl": thumbnailUrl,
+                            "creationTime": episode.created_at,
+                            "thumbnailUrl": thumbnailUrl,
+                            "show_name": episode.show_name
+                        })
+                        episodes.push(episodeNode)
                     end for
 
                     showNode.addFields({
-                        "_id": show._id,
-                        "name": show.name,
-                        "enabled": show.enabled,
-                        "type": getFieldValue(show, "type"),
-                        "creation_time": getFieldValue(show, "creation_time"),
+                        "_id": showName.replace(" ", "_").toLower(),
+                        "name": showName,
+                        "enabled": true,
+                        "type": "vod",
+                        "image_url": showData.image_url,
                         "data": episodes,
                         "episodes": episodes,
                         "episodeCount": episodes.count()
@@ -94,13 +89,13 @@ sub loadShows()
             end for
 
             m.top.content = contentArray
-            print "Processed"; contentArray.count(); "enabled shows with episodes"
+            print "Processed"; contentArray.count(); "shows with episodes"
         else
-            print "Invalid JSON response or no docs field"
+            print "Invalid JSON response or no data field"
             m.top.content = []
         end if
     else
-        print "Empty response from Castr API"
+        print "Empty response from Greater Love TV API"
         m.top.content = []
     end if
 end sub
@@ -108,6 +103,26 @@ end sub
 function getFieldValue(obj as object, fieldName as string) as dynamic
     if obj <> invalid and obj[fieldName] <> invalid
         return obj[fieldName]
+    end if
+    return ""
+end function
+
+function extractVideoIdFromUrl(url as string) as string
+    ' Extract video ID from Castr embed URL
+    ' Example: https://player.castr.com/vod/FEgYaygr8QDofmKX -> FEgYaygr8QDofmKX
+    if url <> invalid and url.instr("/vod/") > -1
+        parts = url.split("/vod/")
+        if parts.count() > 1
+            videoIdPart = parts[1]
+            ' Remove any query parameters or fragments
+            if videoIdPart.instr("?") > -1
+                videoIdPart = videoIdPart.split("?")[0]
+            end if
+            if videoIdPart.instr("#") > -1
+                videoIdPart = videoIdPart.split("#")[0]
+            end if
+            return videoIdPart
+        end if
     end if
     return ""
 end function

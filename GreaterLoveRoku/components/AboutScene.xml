@@ -59,7 +59,7 @@
 
     <!-- Hero Section -->
     <Poster id="aboutTopImage"
-            uri="pkg:/images/about_us_top.png"
+            uri="pkg:/images/about_us_top.jpg"
             width="1800"
             height="400"
             translation="[60, 160]" />

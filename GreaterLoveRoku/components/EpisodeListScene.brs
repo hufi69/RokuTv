@@ -158,7 +158,14 @@ function getCreationDate(episode as object) as string
 end function
 
 function getEpisodeUrl(episode as object) as string
-    if episode.playback <> invalid
+    ' Prioritize direct_url (HLS) for better Roku playback
+    if episode.direct_url <> invalid and episode.direct_url <> ""
+        return episode.direct_url
+    else if episode.url <> invalid and episode.url <> ""
+        return episode.url
+    else if episode.embed_url <> invalid and episode.embed_url <> ""
+        return episode.embed_url
+    else if episode.playback <> invalid
         if episode.playback.embed_url <> invalid and episode.playback.embed_url <> ""
             return episode.playback.embed_url
         else if episode.playback.hls_url <> invalid and episode.playback.hls_url <> ""

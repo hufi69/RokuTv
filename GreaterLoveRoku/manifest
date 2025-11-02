@@ -1,7 +1,7 @@
 ##   Channel Details
 title=Greater Love TV
 major_version=3
-minor_version=0
+minor_version=1
 build_version=00001
 
 ##   Channel Assets
@@ -9,8 +9,8 @@ mm_icon_focus_hd=pkg:/images/app_logo.png
 mm_icon_focus_sd=pkg:/images/app_logo.png
 mm_icon_side_hd=pkg:/images/app_logo.png
 mm_icon_side_sd=pkg:/images/app_logo.png
-splash_screen_hd=pkg:/images/background.png
-splash_screen_sd=pkg:/images/background.png
+splash_screen_hd=pkg:/images/background.jpg
+splash_screen_sd=pkg:/images/background.jpg
 
 ##   Application Attributes
 ui_resolutions=hd
@@ -28,3 +28,22 @@ supported_locales=en_US
 ##   Channel Store Information
 subtitle=Stream Bible Teachers & Live Christian Programming
 channel_genre=faith
+
+##   Content Rating
+content_rating=TV-G
+
+##   Channel Store Description
+description=Greater Love TV brings you inspiring Christian content including live streams, Bible teachings, and faith-based programming. Watch live broadcasts and on-demand episodes from trusted ministries and pastors.
+
+##   Keywords
+keywords=christian,faith,bible,church,ministry,live stream,religious,spiritual
+
+##   Contact Information
+support_email=support@greaterlove.tv
+developer_email=developer@greaterlove.tv
+
+##   Privacy Policy
+privacy_policy=https://greaterlove.tv/privacy-policy
+
+##   Terms of Service
+terms_of_service=https://greaterlove.tv/terms-of-service

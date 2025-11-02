@@ -97,7 +97,7 @@ sub setupCategories()
     categories = [
         {title: "LIVE STREAMS", label: "Watch Live", image: "GL_live_1.png", action: "focus_live"},
         {title: "ALL SHOWS", label: "Browse All", image: "app_logo.png", action: "focus_shows"},
-        {title: "ABOUT US", label: "Our Mission", image: "about_us_top.png", action: "show_about"},
+        {title: "ABOUT US", label: "Our Mission", image: "about_us_top.jpg", action: "show_about"},
         {title: "CONNECT", label: "QR Codes", image: "donate_qrcode.png", action: "show_qr"},
         {title: "PRAYER REQUESTS", label: "We Pray", image: "prayer_request_qrcode.png", action: "show_prayer"}
     ]
@@ -303,9 +303,9 @@ sub setupPremiumShowsWithRealData(shows as object)
 end sub
 
 sub loadRealShows()
-    ' Load real shows from API using the LoadShowsTask
+    ' Load real shows from Greater Love TV API using the LoadShowsTask
     m.loadShowsTask = createObject("roSGNode", "LoadShowsTask")
-    m.loadShowsTask.apiUrl = "https://api.castr.com/v2/videos?page=1&per_page=50"
+    m.loadShowsTask.apiUrl = "https://greaterlove.tv/wp-json/myplugin/v1/castrvod"
     m.loadShowsTask.observeField("content", "onShowsLoaded")
     m.loadShowsTask.control = "RUN"
 end sub
