@@ -4,7 +4,9 @@
   "description": "Greater Love TV Roku Channel",
   "scripts": {
     "build": "npx @rokucommunity/bslint \"source/**/*.brs\" \"components/**/*.brs\"",
-    "package": "npm run build && zip -r GreaterLoveTV_v3.1.0.pkg . -x 'web-test/*' '*.md' '.git/*' 'pkg/*' 'node_modules/*' '.DS_Store' 'images/.DS_Store' '*.zip'",
+    "package": "npm run build && ./package-roku.sh",
+    "package:zip": "./package-roku.sh",
+    "package:clean": "rm -f GreaterLoveTV_*.zip GreaterLoveTV_*.pkg",
     "deploy": "roku-deploy",
     "watch": "roku-deploy --watch"
   },
